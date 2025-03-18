@@ -45,22 +45,23 @@ app.post('/register', (req, res) => {
     pool.query(checkSql, [userName], (err, results) => {
         if (err) {
             console.error('查詢錯誤：', err);
-            res.status(500).send('伺服器錯誤');
+            res.status(500).json({ success: false, message: '伺服器錯誤' });
         } else if (results.rows.length > 0) {
-            res.send('<p>註冊失敗，帳號已存在。</p><a href="newID.html">返回註冊</a>');
+            res.json({ success: false, message: '註冊失敗，帳號已存在。' });
         } else {
             const insertSql = 'INSERT INTO userlist (username, password) VALUES ($1, $2)';
             pool.query(insertSql, [userName, passWord], (err) => {
                 if (err) {
                     console.error('插入錯誤：', err);
-                    res.status(500).send('<p>伺服器錯誤</p><a href="newID.html">返回註冊</a>');
+                    res.status(500).json({ success: false, message: '伺服器錯誤' });
                 } else {
-                    res.send(`<p>註冊成功！歡迎 ${userName}</p><a href="login.html">返回登入</a>`);
+                    res.json({ success: true, message: `註冊成功！歡迎 ${userName}` });
                 }
             });
         }
     });
 });
+
 
 // 儲存測驗結果
 app.post('/save-result', (req, res) => {

@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>密室逃脫</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #f4f4f9, #cfe9ff); /* 漸變背景 */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        a button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            margin: 20px;
+            cursor: pointer;
+            border-radius: 8px;  /* 更圓潤的邊角 */
+            font-size: 18px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        a button:hover {
+            background-color: #45a049;
+            transform: scale(1.05);  /* 按鈕放大效果 */
+        }
+
+        p {
+            color: #333;
+            font-size: 18px;
+            line-height: 1.8;
+            margin: 20px;
+            text-align: center;
+        }
+
+        h1, h2 {
+            color: #333;
+            font-size: 2em;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .classroom {
+            position: relative;
+            width: 100%;
+            height: 300px;
+            background-image: url('pic/classroom.jpg');
+            background-size: cover;
+            background-position: center;
+            margin-top: 30px;
+            border-radius: 12px;  /* 更圓的角度 */
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2); /* 添加陰影 */
+        }
+
+        .clock-area, .note-area, .mag-area, .window-area, .book-area {
+            position: absolute;
+            cursor: pointer;
+        }
+
+        .clock-area {
+            top: 40px;
+            left: 20px;
+        }
+
+        .note-area {
+            top: 70px;
+            right: 20px;
+        }
+
+        .mag-area {
+            top: 190px;
+            right: 150px;
+        }
+
+        .window-area {
+            top: 25px;
+            right: 50px;
+        }
+
+        .book-area {
+            top: 170px;
+            left: 150px;
+        }
+
+        .hover-image {
+            display: none;
+            position: absolute;
+            transition: all 0.3s ease;
+            border-radius: 8px;
+        }
+
+        #hintArea {
+            margin-top: 20px;
+            font-size: 1.1em;
+            color: #333;
+            text-align: center;
+        }
+
+        .hint-container {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 12px 24px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        button:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+
+        #answerInput {
+            padding: 12px;
+            font-size: 16px;
+            width: 240px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            margin-right: 10px;
+            transition: border-color 0.3s ease;
+        }
+
+        #answerInput:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+        }
+
+        #resultMessage {
+            text-align: center;
+            font-size: 1.2em;
+            margin-top: 10px;
+        }
+
+        input, button {
+            transition: all 0.3s ease;
+        }
+
+        .hover-image.clock, .hover-image.note, .hover-image.mag, .hover-image.window, .hover-image.book {
+            width: 150px;
+            height: 150px;
+            pointer-events: none;
+        }
+
+        /* 提交按鈕的提示 */
+        #submitAnswerButton {
+            padding: 14px 28px;
+            font-size: 18px;
+            border-radius: 8px;
+            background-color: #28a745;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #submitAnswerButton:hover {
+            background-color: #218838;
+            transform: scale(1.05);
+        }
+
+    </style>
+</head>
+<body>
+    <div>
+        <a href="homepage.html"><button>回首頁</button></a>
+        <p>
+            遊戲方法：你可以在覺得有線索的地方點滑鼠，會顯示一張圖片，再按一次就可以關掉 <br>
+            移動滑鼠，在這間教室裡尋找門上密碼的提示，解出密碼吧！<br>
+            <!-- 偷偷告訴你，密碼的線索就在黑板的便條紙上！ -->
+        </p>
+    </div>
+    
+    <div class="classroom">
+        <div class="clock-area"></div>
+        <div class="note-area"></div>
+        <div class="mag-area"></div>
+        <div class="window-area"></div>
+        <div class="book-area"></div>
+        <img src="pic/clock.jpg" alt="Clock" class="hover-image clock" id="clockImage">
+        <img src="pic/note.jpg" alt="Note" class="hover-image note" id="noteImage">
+        <img src="pic/mag.jpg" alt="Mag" class="hover-image mag" id="magImage">
+        <img src="pic/window.jpg" alt="Window" class="hover-image window" id="windowImage">
+        <img src="pic/book.jpg" alt="Book" class="hover-image book" id="bookImage">
+    </div>
+    
+    <div class="hint-container">
+        <button id="hintButton">便條紙提示</button> 
+        <button id="hintButton1">第一位數提示</button>
+        <button id="hintButton2">第二位數提示</button>
+        <button id="hintButton3">第三位數提示</button>
+        <button id="hintButton4">第四位數提示</button>
+    </div>
+    
+    <div id="hintArea"></div>
+    
+    <div class="answer-section">
+        <p>請輸入四位數的密碼
+        <input type="text" id="answerInput" maxlength="4" placeholder="輸入密碼">
+        <button id="submitAnswerButton">提交</button>
+        <div id="resultMessage"></div> <!-- 用來顯示結果信息 -->
+        </p>
+    </div>
+    
+
+<script>
+    // 原始圖片區域和其他按鈕功能代碼
+const clockArea = document.querySelector('.clock-area');
+const noteArea = document.querySelector('.note-area');
+const magArea = document.querySelector('.mag-area');
+const windowArea = document.querySelector('.window-area');
+const bookArea = document.querySelector('.book-area');
+const clockImage = document.getElementById('clockImage');
+const noteImage = document.getElementById('noteImage');
+const magImage = document.getElementById('magImage');
+const windowImage = document.getElementById('windowImage');
+const bookImage = document.getElementById('bookImage');
+let getMag = 0;
+
+// 為時鐘區域添加點擊事件
+clockArea.addEventListener('click', () => {
+    if (clockImage.style.display === 'block') {
+        clockImage.style.display = 'none';  // 再次點擊時隱藏圖片
+    } else {
+        clockImage.style.display = 'block'; // 點擊時顯示圖片
+        clockImage.style.width = '150px';   // 設置寬度
+        clockImage.style.height = '150px';  // 設置高度
+    }
+});
+
+// 當滑鼠離開時隱藏圖片
+clockArea.addEventListener('mouseleave', () => {
+    clockImage.style.display = 'none';
+});
+
+// 更新時鐘圖片位置使其跟隨滑鼠
+clockArea.addEventListener('mousemove', (e) => {
+    clockImage.style.left = e.pageX - 10 + 'px';
+    clockImage.style.top = e.pageY - 140 + 'px';
+});
+
+// 為記事本區域添加點擊事件
+noteArea.addEventListener('click', () => {
+    if (noteImage.style.display === 'block') {
+        noteImage.style.display = 'none';  // 再次點擊時隱藏圖片
+    } 
+    else if (getMag == 1) {
+        noteImage.style.display = 'block'; // 點擊時顯示圖片
+        noteImage.style.width = '300px';   // 設置寬度
+        noteImage.style.height = '300px';  // 設置高度
+    }
+    else {
+        noteImage.style.display = 'block'; // 點擊時顯示圖片
+        noteImage.style.width = '20px';    // 設置寬度
+        noteImage.style.height = '20px';   // 設置高度
+    }
+});
+
+// 當滑鼠離開時隱藏圖片
+noteArea.addEventListener('mouseleave', () => {
+    noteImage.style.display = 'none';
+});
+
+// 更新記事本圖片位置使其跟隨滑鼠
+noteArea.addEventListener('mousemove', (e) => {
+    noteImage.style.left = e.pageX - 10 + 'px';
+    noteImage.style.top = e.pageY - 180 + 'px';
+});
+
+// 創建放大鏡區域
+magArea.addEventListener('click', () => {
+    if (magImage.style.display === 'block') {
+        magImage.style.display = 'none';  // 再次點擊時隱藏圖片
+    } else {
+        magImage.style.display = 'block'; // 點擊時顯示圖片
+        getMag = 1;
+    }
+});
+
+// 當滑鼠離開時隱藏圖片
+magArea.addEventListener('mouseleave', () => {
+    magImage.style.display = 'none';
+});
+
+// 更新放大鏡圖片位置使其跟隨滑鼠
+magArea.addEventListener('mousemove', (e) => {
+    magImage.style.left = e.pageX - 10 + 'px';
+    magImage.style.top = e.pageY - 140 + 'px';
+});
+
+// 為窗戶區域添加點擊事件
+windowArea.addEventListener('click', () => {
+    if (windowImage.style.display === 'block') {
+        windowImage.style.display = 'none';  // 再次點擊時隱藏圖片
+    } else {
+        windowImage.style.display = 'block'; // 點擊時顯示圖片
+        windowImage.style.width = '500px';   // 設置寬度
+        windowImage.style.height = '300px';  // 設置高度
+    }
+});
+
+// 當滑鼠離開時隱藏圖片
+windowArea.addEventListener('mouseleave', () => {
+    windowImage.style.display = 'none';
+});
+
+// 更新窗戶圖片位置使其跟隨滑鼠
+windowArea.addEventListener('mousemove', (e) => {
+    windowImage.style.left = e.pageX - 10 + 'px';
+    windowImage.style.top = e.pageY - 140 + 'px';
+});
+
+// 為書本區域添加點擊事件
+let bookClickCount = 0;
+
+bookArea.addEventListener('click', () => {
+    if (bookClickCount === 0) {
+        // 第一次點擊，顯示 pic/book0.jpg
+        bookImage.src = 'pic/book0.jpg';
+        bookImage.style.display = 'block';
+        bookImage.style.width = '300px';   // 設置寬度
+        bookImage.style.height = '400px';  // 設置高度
+        bookClickCount++;
+    } else if (bookClickCount === 1) {
+        // 第二次點擊，顯示 pic/book.jpg
+        bookImage.src = 'pic/book.jpg';
+        bookImage.style.display = 'block';
+        bookImage.style.width = '500px';   // 設置寬度
+        bookImage.style.height = '300px';  // 設置高度
+        bookClickCount++;
+    } else {
+        // 第三次點擊，隱藏圖片並重置點擊計數器
+        bookImage.style.display = 'none';
+        bookClickCount = 0;
+    }
+});
+
+// 當滑鼠離開時隱藏圖片
+bookArea.addEventListener('mouseleave', () => {
+    bookImage.style.display = 'none';
+});
+
+// 更新書本圖片位置使其跟隨滑鼠
+bookArea.addEventListener('mousemove', (e) => {
+    bookImage.style.left = e.pageX - 10 + 'px';
+    bookImage.style.top = e.pageY - 330 + 'px';
+});
+
+// 提示內容
+const hints = {
+    "hintButton": [
+        "黑板中央的便條紙太小了，需要找個東西讓他看起來大一點",
+        "能用的工具在桌上",
+        "有了放大鏡，就能看清楚囉！"
+    ],
+    "hintButton1": [
+        "第1-1個提示是 先找找時鐘在哪吧",
+        "第1-2個提示是 分針是長的 時針是短的",
+        "第1-3個提示是 分針指向12 時針指向3"
+    ],
+    "hintButton2": [
+        "第2-1個提示是 窗戶在外教室的左方",
+        "第2-2個提示是 有綠色跟藍色的小鳥",
+        "第2-3個提示是 藍色小鳥有2隻 綠色小鳥有3隻 所以他們差了3-2=1隻"
+    ],
+    "hintButton3": [
+        "第3-1個提示是 黑板上有白色的算式",
+        "第3-2個提示是 ?的數字是多少呢",
+        "第3-3個提示是 3+5=8"
+    ],
+    "hintButton4": [
+        "第4-1個提示是 書裡夾著幾支筆呢",
+        "第4-2個提示是 要平分，所以要用「除法」！",
+        "第4-3個提示是 10支筆要平分給5個人，所以是10/5，算一算答案等於多少呢"
+    ]
+};
+
+// 設定每個按鈕的提示循環計數器
+let hintCounters = {
+    "hintButton": 0,
+    "hintButton1": 0,
+    "hintButton2": 0,
+    "hintButton3": 0,
+    "hintButton4": 0
+};
+
+// 通用的按鈕點擊事件處理函數
+function showHint(buttonId) {
+    const hintArray = hints[buttonId];
+    const counter = hintCounters[buttonId];
+    
+    // 顯示對應的提示，並更新提示區域內容
+    document.getElementById('hintArea').innerHTML = `<p>${hintArray[counter]}</p>`;
+    
+    // 循環更新計數器
+    hintCounters[buttonId] = (counter + 1) % hintArray.length;
+}
+
+// 綁定每個提示按鈕的點擊事件
+document.getElementById('hintButton').addEventListener('click', () => showHint('hintButton'));
+document.getElementById('hintButton1').addEventListener('click', () => showHint('hintButton1'));
+document.getElementById('hintButton2').addEventListener('click', () => showHint('hintButton2'));
+document.getElementById('hintButton3').addEventListener('click', () => showHint('hintButton3'));
+document.getElementById('hintButton4').addEventListener('click', () => showHint('hintButton4'));
+
+// 提交答案的邏輯
+const submitAnswerButton = document.getElementById('submitAnswerButton');
+    const answerInput = document.getElementById('answerInput');
+    const resultMessage = document.getElementById('resultMessage');
+
+    submitAnswerButton.addEventListener('click', () => {
+        const userAnswer = answerInput.value;
+        if (userAnswer === '9182') {
+            resultMessage.innerHTML = "<p style='color:green;'>你好棒！恭喜過關</p>";
+        } else {
+            resultMessage.innerHTML = "<p style='color:red;'>好像不對唷，再想想</p>";
+        }
+    });
+
+</script>
+
+</body>
+</html>
