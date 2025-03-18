@@ -101,10 +101,10 @@
                 },
                 body: `userName=${userName}&passWord=${passWord}`,
             })
-            .then(response => response.text())
+            .then(response => response.json())
             .then(data => {
-                alert(data); 
-                if (data.includes('登入成功')) {
+                alert(data.message); 
+                if (data.success) {
                     localStorage.setItem('userName', userName);
                     window.location.href = 'homepage.html';
                 }
