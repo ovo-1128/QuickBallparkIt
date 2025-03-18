@@ -116,37 +116,70 @@
             }
         }
         /* 小白板 */
-        .whiteboard {
-            position: fixed;
-            top: 30%;
-            left: 3%;
-            width: 400px;
-            height: 500px;
-            background-color: white;
-            border: 3px solid #ccc;
-            border-radius: 5px;
-            display: none;
-        }
-        #whiteboardCanvas {
-            width: 100%;
-            height: 100%;
-        }
-        .whiteboard-controls {
+        .whiteboard-container {
             position: fixed;
             top: 20%;
-            left: 15%;
+            left: 2%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 999;
         }
-        .clear-whiteboard-btn {
-            margin-top: 10px;
+
+        .toggle-whiteboard-btn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
             cursor: pointer;
-            padding: 8px 16px;
+            border-radius: 15px 15px 0 0;
+            font-size: 16px;
+            font-weight: bold;
+            width: 240px;
+            transition: background-color 0.3s;
+        }
+
+        .toggle-whiteboard-btn:hover {
+            background-color: #45a049;
+        }
+
+        .whiteboard {
+            width: 280px;
+            background-color: white;
+            border: 2px solid #ccc;
+            border-radius: 0 0 15px 15px;
+            display: none;
+            padding: 15px;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+            flex-direction: column;
+            align-items: center;
+            transition: all 0.4s ease;
+        }
+
+        #whiteboardCanvas {
+            width: 250px;
+            height: 300px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: inset 0px 0px 5px rgba(0,0,0,0.05);
+            margin-bottom: 15px;
+        }
+
+        .clear-whiteboard-btn {
+            cursor: pointer;
+            padding: 10px 20px;
             border: none;
             background-color: #4CAF50;
             color: white;
-            border-radius: 5px;
-            display: block;
-            margin-left: auto;
-            margin-right: auto;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: bold;
+            width: 90%;
+            transition: background-color 0.2s;
+        }
+
+        .clear-whiteboard-btn:hover {
+            background-color: #45a049;
         }
         .stats-container {
             position: fixed;
@@ -241,13 +274,12 @@
         </div>
     </div>
 
-    <div class="whiteboard-controls">
-        <button onclick="toggleWhiteboard()">小白板</button>
-    </div>
-
-    <div class="whiteboard" id="whiteboard">
-        <canvas id="whiteboardCanvas"></canvas>
-        <button class="clear-whiteboard-btn" onclick="clearWhiteboard()">清空小白板</button>
+    <div class="whiteboard-container">
+        <button class="toggle-whiteboard-btn" onclick="toggleWhiteboard()">小白板</button>
+        <div class="whiteboard" id="whiteboard">
+            <canvas id="whiteboardCanvas"></canvas>
+            <button class="clear-whiteboard-btn" onclick="clearWhiteboard()">清空小白板</button>
+        </div>
     </div>
 
     <div class="stats-container">
@@ -261,6 +293,8 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
     <script>
+        whiteboardCanvas.width = 200;
+        whiteboardCanvas.height = 250;
         let x, y;
         let stepIndex = 0;
         let correctAnswers = 0;
@@ -466,7 +500,7 @@ function nextQuestion() {
         function toggleWhiteboard() {
             const whiteboard = document.getElementById('whiteboard');
             if (whiteboard.style.display === 'none' || whiteboard.style.display === '') {
-                whiteboard.style.display = 'block';
+                whiteboard.style.display = 'flex';
             } else {
                 whiteboard.style.display = 'none';
             }
@@ -474,35 +508,31 @@ function nextQuestion() {
 
         // 小白板繪畫功能
         const whiteboardCanvas = document.getElementById("whiteboardCanvas");
-        whiteboardCanvas.width = 500;
-        whiteboardCanvas.height = 500;
+        whiteboardCanvas.width = 250;
+        whiteboardCanvas.height = 300;
         const ctx = whiteboardCanvas.getContext("2d");
         let isDrawing = false;
 
         whiteboardCanvas.addEventListener("mousedown", (e) => {
             isDrawing = true;
+            const rect = whiteboardCanvas.getBoundingClientRect();
             ctx.beginPath();
-            ctx.moveTo(e.offsetX, e.offsetY);
+            ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
         });
 
         whiteboardCanvas.addEventListener("mousemove", (e) => {
             if (isDrawing) {
-                ctx.lineTo(e.offsetX, e.offsetY);
+                const rect = whiteboardCanvas.getBoundingClientRect();
+                ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
                 ctx.strokeStyle = "black";
                 ctx.lineWidth = 2;
                 ctx.stroke();
             }
         });
 
-        whiteboardCanvas.addEventListener("mouseup", () => {
-            isDrawing = false;
-        });
+        whiteboardCanvas.addEventListener("mouseup", () => { isDrawing = false; });
+        whiteboardCanvas.addEventListener("mouseout", () => { isDrawing = false; });
 
-        whiteboardCanvas.addEventListener("mouseout", () => {
-            isDrawing = false;
-        });
-
-        // 清空小白板的函式
         function clearWhiteboard() {
             ctx.clearRect(0, 0, whiteboardCanvas.width, whiteboardCanvas.height);
         }
