@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>註冊</title>
+    <link rel="shortcut icon" href="favicon.ico">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <style>
+        * {
+            font-family: 微軟正黑體;
+        }
+        body {
+            background-color: white;
+        }
+        #username, #password, h3 {
+            width: 320px;
+            height: 40px;
+            margin: 20px;
+            color: #003D79;
+        }
+        #container1 {
+            margin: 100px;
+            padding: 20px;
+            width: 420px;
+            height: 550px;
+            background-color: white;
+            border-radius: 10px;
+            border-top: 40px solid #003D79;
+            box-shadow: 0 0px 140px rgba(0, 0, 0, 0.2);
+            position: relative;
+            margin: auto;
+            top: 200px;
+            text-align: center;
+        }
+        .system_name {
+            position: relative;
+            margin: auto;
+            top: 180px;
+            text-align: center;
+        }
+        .submit {
+            background-color: #003D79;
+            color: white;
+            width: 180px;
+            height: 40px;
+            margin: 20px;
+            padding: 10px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+        }
+        .submit:hover {
+            background-color: #009393;
+        }
+        input {
+            padding: 5px;
+            border: solid 2px #ccc;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="system_name">
+        <h2>「算」了~加減學一下!</h2>
+    </div>
+    <div class="login_page">
+        <div id="container1">
+            <div class="login">
+                <h3>註冊 Register</h3>
+                <form method="POST" action="/register">
+                   <!-- <label for="userName">帳號：</label>-->
+                    <input type="text" id="username" name="userName" required placeholder="帳號">
+                    <div class="tab"></div>
+                    <!--<label for="passWord">密碼：</label>-->
+                    <input type="password" id="password" name="passWord" required placeholder="密碼">
+                    <div class="tab"></div>
+                    <button type="submit" class="submit" style="width: 200px; height: 40px;">註冊</button>
+                </form>
+                <a href="/">返回登入</a>
+            </div>
+        </div>
+    </div>
+    <script>
+        // 避免頁面刷新
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault(); 
+
+            var userName = document.getElementById('username').value.trim();
+            var passWord = document.getElementById('password').value.trim();
+
+            if (!userName || !passWord) {
+                alert('請輸入名字和學號！');
+                return;
+            }
+
+            fetch('/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `userName=${userName}&passWord=${passWord}`,
+            })
+            .then(response => response.text())
+            .then(data => {
+                alert(data); 
+                if (data.includes('登入成功')) {
+                    window.location.href = 'homepage.html';
+                }
+            })
+            .catch(error => {
+                console.error('錯誤:', error);
+                alert('登入失敗，請稍後再試');
+            });
+        });
+    </script>
+</body>
+</html>

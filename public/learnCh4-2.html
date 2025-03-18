@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CH4 - 除法學習</title>
+    <style>
+        /* 基本頁面樣式 */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* 頁面橫幅樣式 */
+        .banner {
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px;
+            font-size: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        /* 返回按鈕和標題置中 */
+        .banner a {
+            position: absolute;
+            left: 15px;
+        }
+
+        .banner h1 {
+            flex-grow: 1;
+            text-align: center;
+            margin: 0;
+        }
+
+        /* 按鈕樣式，包括 disabled 狀態 */
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 16px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        button:disabled {
+            background-color: #d3d3d3;
+            color: #888;
+            cursor: not-allowed;
+        }
+
+        /* 頁面主要內容 */
+        .content {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 對話框樣式 */
+        .dialog-box {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            background-color: #fff;
+            text-align: left;
+            position: relative;
+        }
+
+        .helper-image {
+            width: 50px;
+            height: 50px;
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            border-radius: 50%;
+        }
+
+        .dialog-text {
+            margin-left: 70px;
+            line-height: 1.5;
+            font-size: 18px;
+            color: #333;
+        }
+
+        /* 動態內容樣式 */
+        #stepContainer {
+            clear: both;
+            margin-top: 10px;
+            font-size: 18px;
+            text-align: left;
+        }
+
+        .candy {
+            width: 30px;
+            height: 30px;
+            margin: 2px;
+        }
+
+        /* 列式及答案輸入區域 */
+        input[type="text"] {
+            padding: 8px;
+            margin: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        /* 消息顯示樣式 */
+        #resultMessage {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        /* 響應式設計 */
+        @media (max-width: 768px) {
+            .banner {
+                flex-direction: column;
+                padding: 10px;
+            }
+
+            .banner a {
+                position: static;
+                margin-bottom: 10px;
+            }
+
+            button {
+                font-size: 14px;
+                padding: 6px 12px;
+            }
+
+            .content {
+                padding: 15px;
+            }
+
+            .dialog-text {
+                font-size: 14px;
+            }
+
+            #stepContainer {
+                font-size: 16px;
+            }
+
+            .helper-image {
+                width: 40px;
+                height: 40px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .banner {
+                font-size: 18px;
+            }
+
+            button {
+                font-size: 12px;
+                padding: 5px 10px;
+            }
+
+            .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            }
+
+            .helper-image {
+                width: 35px;
+                height: 35px;
+            }
+
+            .dialog-text {
+                margin-left: 55px;
+                font-size: 13px;
+            }
+
+            input[type="text"] {
+                width: 100%;
+                box-sizing: border-box;
+            }
+
+            #stepContainer {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+
+<body onload="generateQuestion()">
+    <div class="banner">
+        <a href="homepage.html"><button> 回主頁面 </button></a>
+        <span>除法學習 - 平分的概念</span>
+    </div>
+
+    <div class="content" style="max-width: 900px; margin: 20px auto;">
+        <div class="dialog-box">
+            <img src="pic/helper.jpg" alt="小老師" class="helper-image">
+            <div class="dialog-text" id="dialogText">
+                哈囉，歡迎來到第四章節「除法」，讓我們來看看「除法」是什麼吧!<br>
+                我們會學會如何把物品平均分給每一個人！
+            </div>
+        </div>
+
+        <div class="dialog-box" style="width: 100%; display: flex; flex-direction: column; align-items: center; box-sizing: border-box;">
+            <p id="question" style="text-align: left; margin-left: 0; font-size: 20px; width: 100%;">現在草原總共有 n 隻羊，有 m 個農場想要平分這些羊，請問每個農場平均可以擁有幾隻羊?</p>
+            
+            <div id="grasslandContainer" style="position: relative; width: 100%; height: auto;">
+                <img src="pic/grassland.png" alt="草地" style="width: 100%; height: auto; border-radius: 8px; display: block; text-align: left;">
+                <canvas id="trailCanvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></canvas>
+                <div id="animalContainer" style="position: absolute; top: 60%; left: 0; width: 100%; height: 40%;"></div>
+            </div>
+                     
+            <br><br>
+            <div id="farmContainer" style="display: flex; justify-content: center; flex-wrap: wrap; margin-bottom: 15px;"></div>
+
+            <div id="resultText" style="font-size: 24px; font-weight: bold; color: #333; margin-bottom: 15px;"></div>
+
+            <div class="button-container">
+                <button class="conti_btn" onclick="distributeAnimals()">連續解題</button>
+                <button class="reset_btn" onclick="resetAnimals()">回復</button>
+            </div>
+
+            <div id="stepContainer" style="text-align: left; margin-left: 0;"></div>
+            <br><br>
+
+            <div style="display: inline-block; vertical-align: middle;"><input type="text" id="expressionInput" placeholder="列式" style="width: 150px; text-align: left;"> = <input type="text" id="resultInput" placeholder="答案" style="width: 50px; text-align: left; margin-left: 10px;"><button onclick="checkAnswer()" style="display: inline-block; margin-left: 10px; vertical-align: middle;">檢查答案</button><button id="nextQuestionButton" onclick="nextQuestion()" disabled style="display: inline-block; margin-left: 10px; vertical-align: middle;">下一題</button></div>
+            <br><br>
+
+            <div id="resultMessage"></div>
+        </div>
+
+        <div id="correctImageContainer"></div>
+    </div>
+
+    <script>
+        let stepCount = 0;
+        let totalItems, people;
+        let stepIndex = 0;
+        let animals = [];
+        let animationFrameId;
+        const fixedSpeed = 0.25; // 固定的較慢移動速度
+
+        function generateQuestion() {
+            const nextQuestionButton = document.getElementById("nextQuestionButton");
+
+            nextQuestionButton.disabled = true;
+            document.getElementById("stepContainer").innerHTML = '';
+            document.getElementById("expressionInput").value = '';
+            document.getElementById("resultInput").value = '';
+            document.getElementById("resultMessage").innerHTML = '';
+            document.getElementById("dialogText").innerHTML = '哈囉，歡迎來到第四章節「除法」，讓我們來看看「除法」是什麼吧! 我們會學會如何把物品平均分給每一個人！';
+            document.getElementById("resultText").innerHTML = '';
+
+            people = Math.floor(Math.random() * 9) + 1;
+            totalItems = people * (Math.floor(Math.random() * 4) + 1);
+
+            const questionElement = document.getElementById('question');
+            questionElement.textContent = `現在草原總共有 ${totalItems} 隻羊，有 ${people} 個農場想要平分這些羊，請問每個農場平均可以擁有幾隻羊?`;
+
+            renderFarm();
+            renderAnimals();
+        }
+
+        function renderFarm() {
+            const farmContainer = document.getElementById("farmContainer");
+            farmContainer.innerHTML = ''; // 清空容器
+
+            const sheepPerFarm = Math.floor(totalItems / people);
+            const farmSize = Math.max(200, 50 * sheepPerFarm); // 基本農場大小為150px，如果羊的數量多，根據羊的數量增加農場大小
+
+            for (let i = 0; i < people; i++) {
+                const farmDiv = document.createElement("div");
+                farmDiv.className = "farm";
+                farmDiv.ondrop = drop;
+                farmDiv.ondragover = allowDrop;
+                farmDiv.style.position = "relative";
+                farmDiv.style.width = `${farmSize}px`;
+                farmDiv.style.height = `${farmSize}px`;
+
+                const img = document.createElement("img");
+                img.src = "pic/farm.png";
+                img.alt = "牧羊人";
+                img.style.width = "100%";
+                img.style.height = "100%";
+                img.style.margin = "10px";
+
+                farmDiv.appendChild(img);
+                farmContainer.appendChild(farmDiv);
+            }
+        }
+
+        function renderAnimals() {
+            const animalContainer = document.getElementById("animalContainer");
+            animalContainer.innerHTML = ''; // 清空容器
+
+            animals = [];
+            for (let i = 0; i < totalItems; i++) {
+                const animal = {
+                    x: Math.random() * (animalContainer.clientWidth - 50),
+                    y: Math.random() * (animalContainer.clientHeight - 50),
+                    speedX: (Math.random() > 0.5 ? 1 : -1) * fixedSpeed,
+                    speedY: (Math.random() > 0.5 ? 1 : -1) * fixedSpeed,
+                    id: `animal-${i}`,
+                    moving: true
+                };
+                animals.push(animal);
+
+                const animalImg = document.createElement("img");
+                animalImg.src = "pic/animal1.png";
+                animalImg.alt = "羊";
+                animalImg.draggable = true;
+                animalImg.id = animal.id;
+                animalImg.style.position = "absolute";
+                animalImg.style.left = `${animal.x}px`;
+                animalImg.style.top = `${animal.y}px`;
+                animalImg.style.width = "50px";
+                animalImg.style.height = "50px";
+                animalImg.ondragstart = drag;
+                animalContainer.appendChild(animalImg);
+            }
+
+            animateAnimals();
+        }
+
+        function distributeAnimals() {
+    // 記錄下原本的題目
+    console.log("記錄下原本的題目。");
+    const originalQuestion = document.getElementById('question').textContent;
+
+    // 保持原來的題目，並讓整個頁面重置
+    console.log("保持原來的題目，重置整個頁面。");
+
+    // 重置頁面
+    resetAnimals();
+    document.getElementById('expressionInput').value = '';
+    document.getElementById('resultInput').value = '';
+    document.getElementById('resultMessage').innerHTML = '';
+    document.getElementById('dialogText').innerHTML = '哈囉，歡迎來到第四章節「除法」，讓我們來看看「除法」是什麼吧! 我們會學會如何把物品平均分給每一個人！';
+    document.getElementById('resultText').innerHTML = '';
+    document.getElementById('stepContainer').innerHTML = '';
+    document.getElementById('question').textContent = originalQuestion;
+
+    console.log("頁面已重置，保持原來的題目。");
+
+    // 分配羊到牧場
+    let currentFarmIndex = 0;
+    const farms = document.getElementsByClassName("farm");
+    const animalsToMove = [...document.querySelectorAll('#animalContainer img[alt="羊"]')];
+
+    // 取得 <canvas> 元素並設置畫布上下文
+    const trailCanvas = document.getElementById("trailCanvas");
+    const ctx = trailCanvas.getContext("2d");
+    trailCanvas.width = trailCanvas.offsetWidth;
+    trailCanvas.height = trailCanvas.offsetHeight;
+
+    function drawTrail(startX, startY, endX, endY) {
+        ctx.strokeStyle = 'red';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(startX, startY);
+        ctx.lineTo(endX, endY);
+        ctx.stroke();
+    }
+
+    function moveAnimalSmoothly(animalElement, startX, startY, endX, endY, duration, onComplete) {
+        const stepCount = 100; // 分成多個步驟
+        const stepTime = duration / stepCount;
+        let step = 0;
+
+        function moveStep() {
+            if (step >= stepCount) {
+                if (onComplete) onComplete();
+                return;
+            }
+
+            const t = step / stepCount;
+            const currentX = startX + t * (endX - startX);
+            const currentY = startY + t * (endY - startY);
+
+            // 更新羊的位置
+            animalElement.style.left = `${currentX}px`;
+            animalElement.style.top = `${currentY}px`;
+
+            // 繪製當前步驟的紅色痕跡
+            if (step > 0) {
+                const prevX = startX + (step - 1) / stepCount * (endX - startX);
+                const prevY = startY + (step - 1) / stepCount * (endY - startY);
+                drawTrail(prevX, prevY, currentX, currentY);
+            }
+
+            step++;
+            setTimeout(moveStep, stepTime);
+        }
+
+        moveStep();
+    }
+
+    function moveNextAnimal() {
+        if (animalsToMove.length === 0) {
+            document.getElementById("resultText").innerHTML = `所以每個牧場有 ${Math.floor(totalItems / people)} 隻羊。`;
+            return;
+        }
+
+        const animal = animalsToMove.shift();
+        const farm = farms[currentFarmIndex];
+        const animalElement = document.getElementById(animal.id);
+
+        if (farm && animalElement) {
+            // 獲取羊的初始位置
+            const animalRect = animalElement.getBoundingClientRect();
+            const grasslandRect = trailCanvas.getBoundingClientRect();
+
+            // 計算羊的初始位置，使其相對於 canvas
+            const startX = animalRect.left - grasslandRect.left;
+            const startY = animalRect.top - grasslandRect.top;
+
+            // 獲取農場的目標位置（中心點）
+            const farmRect = farm.getBoundingClientRect();
+            const farmCenterX = farmRect.left - grasslandRect.left + farm.clientWidth / 2;
+            const farmCenterY = farmRect.top - grasslandRect.top + farm.clientHeight / 1.5;
+
+            // 克隆羊並設置其位置為起始位置
+            const clonedAnimal = animalElement.cloneNode(true);
+            clonedAnimal.id = `${animal.id}-cloned-${Date.now()}`;
+            clonedAnimal.style.position = 'absolute';
+            clonedAnimal.style.transform = 'none';
+            clonedAnimal.style.margin = '0';
+            clonedAnimal.style.width = '50px';
+            clonedAnimal.style.height = '50px';
+            clonedAnimal.style.left = `${startX}px`;
+            clonedAnimal.style.top = `${startY}px`;
+            document.getElementById("grasslandContainer").appendChild(clonedAnimal);
+
+            // 移除原始羊以防止其靜止顯示在草原上
+            animalElement.remove();
+
+            // 平滑移動羊到牧場
+            moveAnimalSmoothly(clonedAnimal, startX, startY, farmCenterX - 25, farmCenterY - 25, 1000, () => {
+                // 計算每隻羊的位置，使其在牧場內均勻分布且不重疊
+                const sheepInFarm = farm.getElementsByTagName('img').length;
+                const spacingX = 45; // 每隻羊之間的水平間距
+                const spacingY = 45; // 每隻羊之間的垂直間距
+
+                // 計算新的位置，讓羊按順序排列
+                let positionX = (sheepInFarm % 3) * spacingX + 10;
+                let positionY = Math.floor(sheepInFarm / 3) * spacingY + farm.clientHeight / 3;
+
+                // 如果是第二排的羊，讓它們向右偏移更多
+                if (Math.floor(sheepInFarm / 3) === 1) {
+                    positionX += 60; // 讓第二排的羊向右偏移
+                }
+
+                // 調整克隆羊的位置，使其位於計算好的農場內部位置
+                clonedAnimal.style.left = `${positionX}px`;
+                clonedAnimal.style.top = `${positionY}px`;
+
+                // 添加羊到對應的牧場
+                farm.appendChild(clonedAnimal);
+
+                // 清除紅色痕跡
+                ctx.clearRect(0, 0, trailCanvas.width, trailCanvas.height);
+
+                currentFarmIndex = (currentFarmIndex + 1) % people;
+
+                // 繼續下一隻羊的移動
+                setTimeout(moveNextAnimal, 300); // 每次移動完後等待 0.3 秒再繼續
+            });
+        }
+    }
+
+    // 清空畫布以移除舊的軌跡
+    ctx.clearRect(0, 0, trailCanvas.width, trailCanvas.height);
+    moveNextAnimal();
+}
+        function animateAnimals() {
+            animals.forEach(animal => {
+                if (animal.moving) {
+                    animal.x += animal.speedX;
+                    animal.y += animal.speedY;
+
+                    if (animal.x < 0) {
+                        animal.x = 0;
+                        animal.speedX *= -1;
+                    }
+                    if (animal.x + 50 > document.getElementById("animalContainer").clientWidth) {
+                        animal.x = document.getElementById("animalContainer").clientWidth - 50;
+                        animal.speedX *= -1;
+                    }
+                    if (animal.y < 0) {
+                        animal.y = 0;
+                        animal.speedY *= -1;
+                    }
+                    if (animal.y + 50 > document.getElementById("animalContainer").clientHeight) {
+                        animal.y = document.getElementById("animalContainer").clientHeight - 50;
+                        animal.speedY *= -1;
+                    }
+
+                    const animalElement = document.getElementById(animal.id);
+                    animalElement.style.left = `${animal.x}px`;
+                    animalElement.style.top = `${animal.y}px`;
+                }
+            });
+
+            animationFrameId = requestAnimationFrame(animateAnimals);
+        }
+
+        function allowDrop(event) {
+            event.preventDefault();
+        }
+
+        function drag(event) {
+            event.dataTransfer.setData("text", event.target.id);
+        }
+
+        function drop(event) {
+            event.preventDefault();
+
+            // 確保 drop 的目標是包含牧羊人圖像的 div 容器
+            let target = event.target;
+            while (!target.classList.contains("farm") && target.parentElement) {
+                target = target.parentElement;
+            }
+
+            if (target && target.classList.contains("farm")) {
+                const data = event.dataTransfer.getData("text");
+                const animal = document.getElementById(data);
+                if (animal) {
+                    // 生成唯一的克隆羊並設置新 ID
+                    const clonedAnimal = animal.cloneNode(true);
+                    clonedAnimal.id = `${animal.id}-cloned-${Date.now()}`;
+
+                    // 設定羊的位置，使其精確顯示在農場的中央部分
+                    const farmWidth = target.clientWidth;
+                    const farmHeight = target.clientHeight;
+
+                    // 設置有效區域的邊距，確保羊不會靠近農場的邊界
+                    const marginX = farmWidth * 0.3;  // 控制羊離開農場邊緣的距離（水平），減小至25%
+                    const marginY = farmHeight * 0.3; // 控制羊離開農場邊緣的距離（垂直），減小至25%
+
+                    // 計算新的 x 和 y 位置，確保羊在中間的綠色區域
+                    const xPosition = Math.random() * (farmWidth - marginX * 2) + marginX;
+                    const yPosition = Math.random() * (farmHeight - marginY * 2) + marginY;
+
+                    // 設定克隆的羊的位置
+                    clonedAnimal.style.position = 'absolute';
+                    clonedAnimal.style.left = `${xPosition}px`;
+                    clonedAnimal.style.top = `${yPosition}px`;
+                    clonedAnimal.style.transform = 'none';
+                    clonedAnimal.style.margin = '0';
+                    clonedAnimal.style.width = '50px';
+                    clonedAnimal.style.height = '50px';
+
+                    // 將克隆的羊添加到目標農場容器中
+                    target.appendChild(clonedAnimal);
+
+                    // 從草地中移除原來的羊
+                    animal.parentNode.removeChild(animal);
+
+                    // 停止羊的移動
+                    const animalData = animals.find(a => a.id === data);
+                    if (animalData) {
+                        animalData.moving = false;
+                    }
+                }
+            }
+        }
+        function resetAnimals() {
+    console.log("Reset animals function called");
+
+    // 獲取所有牧場中的羊
+    const farms = document.getElementsByClassName("farm");
+    const grasslandContainer = document.getElementById("animalContainer");
+
+    // 遍歷每個牧場，將所有的羊移回草地
+    for (let farm of farms) {
+        const sheepInFarm = farm.querySelectorAll('img');
+
+        // 將每隻羊移回草地
+        for (let sheep of sheepInFarm) {
+            if (sheep.alt === "羊") { // 只移動羊，排除其他圖片
+                // 重置羊的樣式和位置
+                sheep.style.position = 'absolute';
+                sheep.style.transform = 'none';
+                sheep.style.margin = '0';
+                sheep.style.width = '50px';
+                sheep.style.height = '50px';
+
+                // 設置羊的隨機位置，確保它們回到草原
+                const randomX = Math.random() * (grasslandContainer.clientWidth - 50);
+                const randomY = Math.random() * (grasslandContainer.clientHeight - 50);
+
+                // 設置羊的新位置
+                sheep.style.left = `${randomX}px`;
+                sheep.style.top = `${randomY}px`;
+
+                // 使羊可以被拖曳
+                sheep.draggable = true;
+                sheep.ondragstart = drag;
+
+                // 將羊重新加入到草地容器中
+                grasslandContainer.appendChild(sheep);
+
+                // 開始讓羊隨機移動
+                animateAnimal(sheep);
+            }
+        }
+    }
+}
+
+function animateAnimal(animal) {
+    const grasslandContainer = document.getElementById("animalContainer");
+
+    function move() {
+        const randomX = Math.random() * (grasslandContainer.clientWidth - 50);
+        const randomY = Math.random() * (grasslandContainer.clientHeight - 50);
+
+        animal.animate([
+            { left: animal.style.left, top: animal.style.top },
+            { left: `${randomX}px`, top: `${randomY}px` }
+        ], {
+            duration: 4000, // 與其他羊一致的速度
+            fill: 'forwards'
+        }).onfinish = function() {
+            // 設置羊的新位置
+            animal.style.left = `${randomX}px`;
+            animal.style.top = `${randomY}px`;
+            move();
+        };
+    }
+
+    move();
+}
+
+function drag(event) {
+    event.dataTransfer.setData("text", event.target.id);
+}
+
+
+function checkAnswer() {
+        const expressionInput = document.getElementById('expressionInput');
+        const resultInput = document.getElementById('resultInput');
+
+        const correctExpression = `${totalItems}/${people}`;
+        const correctResult = Math.floor(totalItems / people);
+
+        const isExpressionCorrect = (expressionInput.value.trim() === correctExpression);
+        const isResultCorrect = (parseInt(resultInput.value.trim()) === correctResult);
+
+        let message = '';
+        let color = '';
+
+        if (isExpressionCorrect && isResultCorrect) {
+            message = '✔ 答對了！每人可以分得 ' + correctResult + ' 隻羊！';
+            color = 'green';
+            document.getElementById("nextQuestionButton").disabled = false;
+            document.getElementById("checkAnswerButton").disabled = true;
+            expressionInput.value = '';
+            resultInput.value = '';
+        } else if (!isExpressionCorrect && isResultCorrect) {
+            message = '⚠ 列式錯了但答案正確，再想想列式怎麼寫。';
+            color = 'orange';
+        } else if (isExpressionCorrect && !isResultCorrect) {
+            message = '⚠ 列式正確，但答案錯誤。試著再計算一次。';
+            color = 'orange';
+        } else {
+            message = '❌ 列式和答案都不對，再試試看！';
+            color = 'red';
+        }
+
+        // 自訂的彈跳視窗顯示訊息，並帶有顏色和較大字體
+        const messageDiv = document.createElement('div');
+        messageDiv.textContent = message;
+        messageDiv.style.color = color;
+        messageDiv.style.fontWeight = 'bold';
+        messageDiv.style.fontSize = '20px';
+        messageDiv.style.position = 'fixed';
+        messageDiv.style.top = '50%';
+        messageDiv.style.left = '50%';
+        messageDiv.style.transform = 'translate(-50%, -50%)';
+        messageDiv.style.backgroundColor = 'white';
+        messageDiv.style.padding = '20px';
+        messageDiv.style.border = '2px solid ' + color;
+        messageDiv.style.borderRadius = '10px';
+        messageDiv.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
+        document.body.appendChild(messageDiv);
+
+        setTimeout(() => {
+            document.body.removeChild(messageDiv);
+        }, 3000);
+    }
+
+
+    function nextQuestion() {
+        document.getElementById('stepContainer').innerHTML = '';
+        document.getElementById('expressionInput').value = '';
+        document.getElementById('resultInput').value = '';
+        stepCount = 0;
+        stepIndex = 0;
+
+        const dialogText = document.getElementById('dialogText');
+        dialogText.innerHTML = '開始解題吧！';
+
+        document.getElementById("nextQuestionButton").disabled = true;
+        document.getElementById("checkAnswerButton").disabled = false;
+        generateQuestion();
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // 為檢查答案按鈕添加 ID，以便禁用和啟用
+        const checkAnswerButton = document.querySelector('button[onclick="checkAnswer()"]');
+        checkAnswerButton.id = "checkAnswerButton";
+    });
+    </script>
+</body>
+
+</html>

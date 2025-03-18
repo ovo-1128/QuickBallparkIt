@@ -1,0 +1,370 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+    <meta charset="UTF-8">
+    <title>CH4 - 除法學習</title>
+    <style>
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+}
+
+/* 頁面橫幅樣式 */
+.banner {
+    background-color: #4CAF50;
+    color: white;
+    padding: 15px;
+    font-size: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+/* 返回按鈕和標題置中 */
+.banner a {
+    position: absolute;
+    left: 15px;
+}
+
+.banner h1 {
+    flex-grow: 1;
+    text-align: center;
+    margin: 0;
+}
+
+/* 按鈕樣式，包括 disabled 狀態 */
+button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    cursor: pointer;
+    margin: 5px;
+    font-size: 16px;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+button:disabled {
+    background-color: #d3d3d3;
+    color: #888;
+    cursor: not-allowed;
+}
+
+/* 頁面主要內容 */
+.content {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* 對話框樣式 */
+.dialog-box {
+    border: 1px solid #ddd;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    background-color: #fff;
+    text-align: left;
+    position: relative;
+}
+
+.helper-image {
+    width: 50px;
+    height: 50px;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    border-radius: 50%;
+}
+
+.dialog-text {
+    margin-left: 70px;
+    line-height: 1.5;
+    font-size: 16px;
+    color: #333;
+}
+
+/* 動態內容樣式 */
+#stepContainer {
+    clear: both;
+    margin-top: 10px;
+    font-size: 18px;
+    text-align: left;
+}
+
+.candy {
+    width: 30px;
+    height: 30px;
+    margin: 2px;
+}
+
+/* 列式及答案輸入區域 */
+input[type="text"] {
+    padding: 8px;
+    margin: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+/* 消息顯示樣式 */
+#resultMessage {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+}
+
+
+    </style>
+</head>
+
+<body onload="generateQuestion()">
+
+    <div class="banner">
+        <a href="homepage.html"><button> 回主頁面 </button></a>
+        <span>除法學習 - 試題演練</span>
+    </div>
+
+    <div class="content">
+        <div class="dialog-box">
+            <img src="pic/helper.jpg" alt="小老師" class="helper-image">
+            <div class="dialog-text" id="dialogText">
+                哈囉，歡迎來到第四章節「除法」，讓我們來看看「除法」是什麼吧!<br>
+                我們會學會如何把物品平均分給每一個人！
+            </div>
+        </div>
+
+        <div class="dialog-box">
+            <p id="question"></p>
+
+            <label>
+                <input type="checkbox" id="remainderCheckbox" onchange="generateQuestion()"> 題目包含餘數(答案寫商數即可)
+            </label>
+            <br><br>
+
+            <button class="step_btn" onclick="stepHandler()">逐步解題</button>
+            <button class="conti_btn" onclick="continuousHandler()">連續解題</button>
+
+            <br><br>
+
+            <div id="stepContainer"></div>
+            <br><br>
+
+            <input type="text" id="expressionInput" placeholder="列式" style="width: 100px"> = 
+            <input type="text" id="resultInput" placeholder="答案(商)" style="width: 75px;">...
+            <input type="text" id="resultInput2" placeholder="答案(餘數)" style="width: 75px;"> 
+            <button onclick="checkAnswer()">檢查答案</button>
+            <button id="nextQuestionButton" onclick="nextQuestion()" disabled>下一題</button>
+            <br><br>
+
+            <div id="resultMessage"></div>
+        </div>
+
+        <div id="correctImageContainer"></div>
+    </div>
+
+    <script>
+        let stepCount = 0;
+        let totalItems, people;
+        let stepIndex = 0;
+
+        function generateQuestion() {
+            const remainderCheckbox = document.getElementById("remainderCheckbox");
+            const nextQuestionButton = document.getElementById("nextQuestionButton");
+            
+            nextQuestionButton.disabled = true;
+            document.getElementById("stepContainer").innerHTML = '';
+            document.getElementById("expressionInput").value = '';
+            document.getElementById("resultInput").value = '';
+            document.getElementById("resultMessage").innerHTML = '';
+            document.getElementById("dialogText").innerHTML = '哈囉，歡迎來到第四章節「除法」，讓我們來看看「除法」是什麼吧! 我們會學會如何把物品平均分給每一個人！';
+            
+            document.querySelector(".step_btn").disabled = false;
+            document.querySelector(".conti_btn").disabled = false;
+
+            people = Math.floor(Math.random() * 9) + 1;
+
+            if (remainderCheckbox.checked) {
+                totalItems = Math.floor(Math.random() * 100);
+                while (totalItems % people === 0) {
+                    totalItems = Math.floor(Math.random() * 100);
+                }
+            } else {
+                totalItems = people * (Math.floor(Math.random() * 10) + 1);
+            }
+
+            const questionElement = document.getElementById('question');
+            questionElement.textContent = `題目: 一共有 ${totalItems} 顆糖果，平均分給 ${people} 個人，每人可以分得多少顆糖果？`;
+        }
+
+        function stepHandler() {
+            const steps = [
+                `共有 ${totalItems} 顆糖果，要平均分給 ${people} 個人。`,
+                `每人可以得到 ${totalItems} ÷ ${people} 顆糖果，答案是 ${Math.floor(totalItems / people)} 顆`,
+                `剩餘 ${totalItems % people} 顆糖果無法平均分配。`
+            ];
+
+            const stepContainer = document.getElementById('stepContainer');
+            document.querySelector('.conti_btn').disabled = true;
+
+            if (stepIndex < steps.length) {
+                const p = document.createElement('p');
+                p.textContent = (stepIndex + 1) + ". " + steps[stepIndex];
+                stepContainer.appendChild(p);
+
+                if (stepIndex === 1) {
+                    generateCandiesRows(totalItems, people);
+                }
+
+                stepIndex++;
+            }
+
+            if (stepIndex === steps.length) {
+                document.querySelector('.step_btn').disabled = true;
+            }
+        }
+
+        function continuousHandler() {
+            const stepContainer = document.getElementById('stepContainer');
+            document.querySelector('.step_btn').disabled = true;
+            document.querySelector('.conti_btn').disabled = true;
+            stepCount = 0;
+
+            const steps = [
+                `1. 一共有 ${totalItems} 顆糖果，分給 ${people} 人。<br>`,
+                `2. 每人可以得到 ${totalItems} ÷ ${people} 顆糖果 = ${Math.floor(totalItems / people)} 顆<br>`,
+                `3. 剩下的糖果數為 ${totalItems % people} 顆<br>`
+            ];
+
+            steps.forEach((step, index) => {
+                setTimeout(() => {
+                    stepContainer.innerHTML += step;
+                    if (index === 1) generateCandiesRows(totalItems, people);
+                }, 1000 * index);
+            });
+        }
+        function generateCandiesRows(totalItems, people) {
+    const stepContainer = document.getElementById('stepContainer');
+    stepContainer.innerHTML = ''; // 清空內容，以免累積過多結果
+
+    const itemsPerPerson = Math.floor(totalItems / people);
+    const remainder = totalItems % people; // 計算餘數
+
+    for (let i = 1; i <= people; i++) {
+        const rowDiv = document.createElement('div');
+        rowDiv.style.display = 'flex';
+        rowDiv.style.alignItems = 'center';
+        rowDiv.style.marginBottom = '5px';
+
+        const label = document.createElement('span');
+        label.textContent = `第 ${i} 個人分得：`;
+        label.style.marginRight = '10px';
+
+        rowDiv.appendChild(label);
+
+        for (let j = 0; j < itemsPerPerson; j++) {
+            const img = document.createElement('img');
+            img.src = 'pic/candy.png';
+            img.classList.add('candy');
+            img.style.width = '30px'; // 設定圖片大小
+            img.style.height = '30px';
+            img.style.marginRight = '5px';
+            rowDiv.appendChild(img);
+        }
+
+        stepContainer.appendChild(rowDiv);
+    }
+
+    // 顯示餘數的部分
+    if (remainder > 0) {
+        const remainderDiv = document.createElement('div');
+        remainderDiv.style.display = 'flex';
+        remainderDiv.style.alignItems = 'center';
+        remainderDiv.style.marginTop = '10px';
+
+        const remainderLabel = document.createElement('span');
+        remainderLabel.textContent = `剩餘的糖果（餘數）：`;
+        remainderLabel.style.marginRight = '10px';
+        remainderLabel.style.fontWeight = 'bold';
+        remainderDiv.appendChild(remainderLabel);
+
+        for (let i = 0; i < remainder; i++) {
+            const img = document.createElement('img');
+            img.src = 'pic/candy.png';
+            img.classList.add('candy');
+            img.style.width = '30px';
+            img.style.height = '30px';
+            img.style.marginRight = '5px';
+            remainderDiv.appendChild(img);
+        }
+
+        stepContainer.appendChild(remainderDiv);
+    }
+}
+
+
+        function checkAnswer() {
+            const expressionInput = document.getElementById('expressionInput').value;
+            const resultInput = document.getElementById('resultInput').value;
+            const resultInput2 = document.getElementById('resultInput2').value;
+
+            const correctExpression = `${totalItems}/${people}`;
+            const correctResult = Math.floor(totalItems / people);
+            const correctResult2 = Math.floor(totalItems % people);
+
+            const isExpressionCorrect = (expressionInput === correctExpression);
+            const isResultCorrect = (parseInt(resultInput) === correctResult);
+            const isResultCorrect2 = (parseInt(resultInput2) === correctResult2);
+
+            const dialogText = document.getElementById('dialogText');
+
+            if (isExpressionCorrect && isResultCorrect && isResultCorrect2) {
+                dialogText.innerHTML = `<span style="color: green;">答對了！每人可以分得 ${correctResult} 顆糖果！</span>`;
+                document.getElementById("nextQuestionButton").disabled = false;
+            } else if (!isExpressionCorrect && isResultCorrect && isResultCorrect2) {
+                dialogText.innerHTML = `<span style="color: orange;">列式錯了但答案正確，再想想列式怎麼寫。</span>`;
+            } else if (isExpressionCorrect && !isResultCorrect && isResultCorrect2) {
+                dialogText.innerHTML = `<span style="color: orange;">列式正確，但答案的商錯了。試著再計算一次。</span>`;
+            } else if (isExpressionCorrect && isResultCorrect && !isResultCorrect2) {
+                dialogText.innerHTML = `<span style="color: orange;">列式正確，但答案的餘數錯了。試著再計算一次。</span>`;
+            } else {
+                dialogText.innerHTML = `<span style="color: red;">列式和答案都不對，再試試看！</span>`;
+            }
+        }
+
+        function nextQuestion() {
+            document.getElementById('stepContainer').innerHTML = '';
+            document.getElementById('expressionInput').value = '';
+            document.getElementById('resultInput').value = '';
+            document.getElementById('resultInput2').value = '';
+            stepCount = 0;
+            stepIndex = 0;
+
+            const dialogText = document.getElementById('dialogText');
+            dialogText.innerHTML = '開始解題吧！';
+
+            document.getElementById("nextQuestionButton").disabled = true;
+            document.querySelector('.step_btn').disabled = false;
+            document.querySelector('.conti_btn').disabled = false;
+
+            generateQuestion();
+        }
+    
+    </script>
+</body>
+
+</html>

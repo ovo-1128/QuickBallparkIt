@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>數學四則運算測驗</title>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      flex-wrap: wrap;
+      font-family: "Helvetica Neue", "Noto Sans", "Microsoft JhengHei", sans-serif;
+      background-color: #f9fafb;
+      padding: 40px;
+      color: #333;
+    }
+
+
+    #quizContainer, #resultContainer {
+      background-color: #ffffff;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      border-radius: 20px;
+      padding: 30px;
+      width: 45%;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    #quizContainer:hover, #resultContainer:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+    }
+
+
+    h1 {
+      font-size: 28px;
+      text-align: center;
+      margin-bottom: 20px;
+      font-weight: 600;
+    }
+
+    h2, h3 {
+      font-size: 22px;
+      font-weight: 500;
+      border-bottom: 1px solid #e0e0e0;
+      padding-bottom: 8px;
+    }
+
+    p {
+      margin-bottom: 14px;
+      line-height: 1.7;
+      font-size: 16px;
+    }
+
+    input[type="text"] {
+      padding: 6px 10px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      margin-left: 6px;
+      margin-right: 6px;
+      width: 80px;
+      transition: border-color 0.2s;
+    }
+
+    input[type="text"]:focus {
+      outline: none;
+      border-color: #4a90e2;
+    }
+
+    button[type="submit"] {
+      background-color: #306ba2;
+      color: #fff;
+      border: none;
+      padding: 12px 40px;
+      border-radius: 30px;
+      font-size: 18px;
+      cursor: pointer;
+      display: block;
+      margin: 30px auto;
+      transition: background-color 0.3s, transform 0.15s;
+    }
+
+    button[type="submit"]:hover {
+      background-color: #1a39b8;
+    }
+
+    button[type="submit"]:active {
+      transform: scale(0.96);
+    }
+
+    .wrong {
+      color: #d33;
+      font-weight: bold;
+    }
+
+    #questions p {
+      opacity: 0;
+      transform: translateY(10px);
+      animation: fadeInUp 0.4s forwards;
+      animation-delay: calc(0.08s * var(--i));
+    }
+
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    #resultContainer {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s, transform 0.6s;
+    }
+
+    #resultContainer.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 1024px) {
+      #quizContainer, #resultContainer {
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 600px) {
+      body {
+        padding: 20px;
+      }
+
+      h1 {
+        font-size: 24px;
+      }
+
+      h2, h3 {
+        font-size: 20px;
+      }
+
+      input[type="text"] {
+        width: 60px;
+      }
+
+      button[type="submit"] {
+        width: 100%;
+        padding: 12px 0;
+        font-size: 16px;
+      }
+    }
+  </style>
+  <script>
+    // -----------------------
+    // 工具函式
+    // -----------------------
+
+    // 容許小數誤差 (例如 0.001)
+    function isCloseEnough(userVal, correctVal, epsilon = 0.001) {
+      return Math.abs(userVal - correctVal) < epsilon;
+    }
+
+    // 產生 [a, b]，確保 a >= b，用於減法避免負數
+    function generateSubtractionPair() {
+      let a = Math.floor(Math.random() * 30) + 10; // 10~39
+      let b = Math.floor(Math.random() * 30) + 10; // 10~39
+      if (b > a) {
+        [a, b] = [b, a];
+      }
+      return [a, b];
+    }
+
+    // 產生 num1, num2，確保 num1 為 num2 的倍數
+    // 適合遊樂場門票、長途巴士旅程等必須整除的情境
+    function generateMultiple(num1Range, num2Range) {
+      let num2 = Math.floor(Math.random() * num2Range) + 1;
+      let num1 = num2 * (Math.floor(Math.random() * num1Range) + 1);
+      return [num1, num2];
+    }
+
+    // 第 3 題「長算式」：((a + b) × c) ÷ d
+    // 帶 2 位小數，如要整除可自行改寫
+    function generateComplexExpr() {
+      let a = Math.floor(Math.random() * 9) + 1; // 1..9
+      let b = Math.floor(Math.random() * 9) + 1; // 1..9
+      let c = Math.floor(Math.random() * 4) + 2; // 2..5
+      let d = Math.floor(Math.random() * 5) + 1; // 1..5
+
+      const expression = `(( ${a} + ${b} ) × ${c}) ÷ ${d}`;
+      const resultValue = parseFloat((((a + b) * c) / d).toFixed(2));
+      return { expr: expression, value: resultValue };
+    }
+
+    // 第 5 題: 讓「早餐店」生成合理亂數
+    function generateBreakfast() {
+      // 例如:
+      // 兒童餐單價: [20..80]
+      // 買幾份兒童餐: [2..6]
+      // => 總金額
+      // => 再在 [2..10] 查一個整除的 adultCount
+      let childMeals = Math.floor(Math.random() * 5) + 2; // 2..6
+      let childPrice = Math.floor(Math.random() * 61) + 20; // 20..80
+      let totalCost = childPrice * childMeals; 
+      let adultCount = Math.floor(Math.random() * 9) + 2; // 2..10
+      while (totalCost % adultCount !== 0) {
+        adultCount = Math.floor(Math.random() * 9) + 2;
+      }
+      let adultPrice = totalCost / adultCount;
+
+      return {
+        // 套餐售價
+        num1: adultPrice,
+        // 買幾份套餐
+        num2: adultCount,
+        // 可買多少份兒童餐
+        num3: childMeals
+      };
+    }
+
+    // -----------------------
+    // 全域變數
+    // -----------------------
+    let questions = [];
+    let answers = [];
+
+    // -----------------------
+    // 產生題目
+    // -----------------------
+    function generateQuestions() {
+      const questionContainer = document.getElementById("questions");
+      if (!questionContainer) return;
+
+      // 第 1 題 (index=0): 乘法
+      let q0 = {
+        num1: Math.floor(Math.random() * 10) + 1,
+        num2: Math.floor(Math.random() * 10) + 1,
+        op: "×"
+      };
+
+      // 第 2 題 (index=1): 減法 (確保不負)
+      let [subA, subB] = generateSubtractionPair();
+      let q1 = {
+        num1: subA,
+        num2: subB,
+        op: "-"
+      };
+
+      // 第 3 題 (index=2): 除法 + 商/餘
+      let q2 = {
+        num1: Math.floor(Math.random() * 50) + 1,
+        num2: Math.floor(Math.random() * 9) + 1,
+        op: "÷"
+      };
+
+      // 第 4 題 (index=3): 隨機括號 + 乘 / 除
+      let comp = generateComplexExpr();
+      let q3 = {
+        expr: comp.expr,
+        val: comp.value, // 正解
+        op: "complex"
+      };
+
+      // 第 5 題 (index=4): 淨灘
+      // 產生淨灘題目 (總垃圾量 / 人數) 答案適中且有小數
+        function generateCleanupQuestion() {
+        let volunteerCount = Math.floor(Math.random() * 10) + 5; // 5~14 位志工
+        let perBagWeight = Math.floor(Math.random() * 3) + 2; // 每袋 2~4 公斤
+        let bagCount = Math.floor(Math.random() * 10) + 5; // 5~14 袋
+        let totalWeight = perBagWeight * bagCount;
+
+        // 確保總垃圾量大於志工人數 * 2（每人至少 2 公斤以上）
+        while (totalWeight < volunteerCount * 2) {
+            bagCount++;
+            totalWeight = perBagWeight * bagCount;
+        }
+
+        return {
+            num1: volunteerCount,
+            num2: perBagWeight,
+            num3: bagCount,
+            ans: parseFloat((totalWeight / volunteerCount).toFixed(2)),
+            op: "淨灘"
+        };
+        }
+
+        let netQ = generateCleanupQuestion();
+
+      // 第 6 題 (index=5): 早餐店 (亂數)
+      let b = generateBreakfast();
+      let q5 = {
+        num1: b.num1,
+        num2: b.num2,
+        num3: b.num3,
+        op: "早餐店"
+      };
+
+      // 第 7 題 (index=6): 樂隊排練 (可有餘數，但只取商)
+      let q6 = {
+        num1: Math.floor(Math.random() * 200) + 50,
+        num2: Math.floor(Math.random() * 5) + 1,
+        op: "樂隊"
+      };
+
+      // 第 8 題 (index=7): 遊樂場門票 (整除)
+      let [a7, b7] = generateMultiple(20, 10);
+      let q7 = {
+        num1: a7,
+        num2: b7,
+        op: "門票"
+      };
+
+      // 第 9 題 (index=8): 購物折扣 (打8折後，四捨五入)
+      let q8 = {
+        num1: Math.floor(Math.random() * 300) + 50,
+        op: "折扣"
+      };
+
+      // 第 10 題 (index=9): 長途巴士 (整除 + 商/餘)
+      let [busA, busB] = generateMultiple(50, 25);
+      let q9 = {
+        num1: busA,
+        num2: busB,
+        op: "巴士"
+      };
+
+      // 組合題目
+      questions = [q0, q1, q2, q3, netQ, q5, q6, q7, q8, q9];
+
+      // 準備答案 + 顯示文字
+      answers = [];
+      let questionsHTML = "";
+
+      for (let i = 0; i < 10; i++) {
+        let txt = generateQuestionText(i);
+        questionsHTML += `<p style="--i:${i}">${i + 1}. ${txt}</p>`;
+
+      }
+      questionContainer.innerHTML = questionsHTML;
+    }
+
+    // -----------------------
+    // 顯示文字 + 答案計算
+    // -----------------------
+    function generateQuestionText(i) {
+      const q = questions[i];
+      switch (i) {
+        case 0:
+          // 乘法
+          let ans0 = q.num1 * q.num2;
+          answers.push(ans0);
+          return `${q.num1} × ${q.num2} = ? <input type="text" name="q${i+1}">`;
+
+        case 1:
+          // 減法 (不會負)
+          let ans1 = q.num1 - q.num2;
+          answers.push(ans1);
+          return `${q.num1} - ${q.num2} = ? <input type="text" name="q${i+1}">`;
+
+        case 2:
+          // 除法 + 商餘
+          // answers => [商, 餘]
+          let divAns = [Math.floor(q.num1 / q.num2), q.num1 % q.num2];
+          answers.push(divAns);
+          return `倉庫內有 ${q.num1} 個物品，每箱裝 ${q.num2} 個。請問可以裝滿幾箱？剩下幾個？ <input type="text" name="q${i+1}a"> ... <input type="text" name="q${i+1}b">`;
+
+        case 3:
+          // (a + b) × c ÷ d => complex
+          answers.push(q.val); // 預先算好的結果 (float)
+          return `${q.expr} = ? <input type="text" name="q${i+1}">`;
+
+        case 4:
+          // 淨灘 - 整除
+          // 由 generateQuestions 時已確保整除
+          // garbageTotal / q.num1
+          // 我們就算一下:
+            answers.push(q.ans);
+            return `一次淨灘活動中，共有 ${q.num1} 位志工參與。每袋可裝 ${q.num2} 公斤垃圾，總共裝滿 ${q.num3} 袋。請問平均每人撿了多少公斤垃圾？ <input type="text" name="q${i+1}">`;
+
+        case 5:
+          // 早餐店
+          // ans = (adultPrice * adultCount) / childMeals?
+          // 其實 generateBreakfast() 生成 => adultPrice, adultCount, childMeals
+          // correct = (adultPrice * adultCount) / childMeals => 兒童餐單價
+          let ans5 = parseFloat(((q.num1 * q.num2) / q.num3).toFixed(2));
+          answers.push(ans5);
+          return `早餐店的套餐每份售價 ${q.num1} 元，購買 ${q.num2} 份的總金額剛好可以買 ${q.num3} 份兒童餐。請問每份兒童餐多少錢？ <input type="text" name="q${i+1}">`;
+
+        case 6:
+          // 樂隊排練 => 只取商
+          let ans6 = Math.floor(q.num1 / q.num2);
+          answers.push(ans6);
+          return `樂隊的排練時間總共 ${q.num1} 分鐘，每首曲子練習 ${q.num2} 分鐘。請問最多可以練習幾首曲子？ <input type="text" name="q${i+1}">`;
+
+        case 7:
+          // 遊樂場 => 整除
+          // answers => q.num1 / q.num2
+          let ans7 = q.num1 / q.num2; 
+          answers.push(ans7);
+          return `遊樂場的門票總收入為 ${q.num1} 元，每張票售價 ${q.num2} 元。請問賣出了多少張門票？ <input type="text" name="q${i+1}">`;
+
+        case 8:
+          // 折扣 => 四捨五入
+          let disc = Math.round(q.num1 * 0.8);
+          answers.push(disc);
+          return `商店正在促銷，原價 ${q.num1} 元的商品打 8 折。請問折扣後的價格是多少？ (請四捨五入)<input type="text" name="q${i+1}">`;
+
+        case 9:
+          // 長途巴士 => 整除 + 商/餘
+          let busAns = [Math.floor(q.num1 / q.num2), q.num1 % q.num2];
+          answers.push(busAns);
+          return `長途巴士一共行駛 ${q.num1} 公里，每班巴士行駛 ${q.num2} 公里。請問需要幾班才能跑完？剩下幾公里？ <input type="text" name="q${i+1}a"> ... <input type="text" name="q${i+1}b">`;
+
+        default:
+          return ``; // 理論上不會進到這
+      }
+    }
+
+    // -----------------------
+    // 提交答案 + 檢查
+    // -----------------------
+    function checkAnswers(event) {
+      event.preventDefault();
+      const resultContainer = document.getElementById("resultContainer");
+      resultContainer.classList.remove("show");
+      resultContainer.innerHTML = "";
+
+      let score = 0;
+      let feedback = "<h2>測驗結果</h2>";
+
+      for (let i = 0; i < 10; i++) {
+        let correctAnswer = answers[i];
+        // 取得使用者輸入
+        if (i === 2 || i === 9) {
+          // 商/餘
+          let quotientInput = parseInt(document.querySelector(`[name=q${i+1}a]`).value.trim());
+          let remainderInput = parseInt(document.querySelector(`[name=q${i+1}b]`).value.trim());
+          let userAnswer = [quotientInput, remainderInput];
+          if (JSON.stringify(userAnswer) === JSON.stringify(correctAnswer)) {
+            score++;
+          } else {
+            feedback += `<p class='wrong'>第 ${i+1} 題錯誤，正確答案是：${correctAnswer}</p>`;
+          }
+        } else {
+          // 其餘單一輸入框
+          let inputVal = document.querySelector(`[name=q${i+1}]`).value.trim();
+          let userVal = parseFloat(inputVal);
+
+          // 處理小數或整數
+          if (typeof correctAnswer === 'number') {
+            if (Number.isInteger(correctAnswer)) {
+              // 整數題 => 直接比較
+              if (userVal === correctAnswer) {
+                score++;
+              } else {
+                feedback += `<p class='wrong'>第 ${i+1} 題錯誤，正確答案是：${correctAnswer}</p>`;
+              }
+            } else {
+              // 可能是小數 => 用誤差判斷
+              if (isCloseEnough(userVal, correctAnswer)) {
+                score++;
+              } else {
+                feedback += `<p class='wrong'>第 ${i+1} 題錯誤，正確答案是：${correctAnswer}</p>`;
+              }
+            }
+          } else {
+            // fallback，如果答案不是 number (理論上不會發生)
+            if (JSON.stringify(userVal) === JSON.stringify(correctAnswer)) {
+              score++;
+            } else {
+              feedback += `<p class='wrong'>第 ${i+1} 題錯誤，正確答案是：${correctAnswer}</p>`;
+            }
+          }
+        }
+      }
+
+      feedback = `<p>您的分數：${score} / 10</p>` + feedback;
+      feedback += `<div style="text-align:center; margin-top:30px;">
+        <a href="homepage.html" style="
+            display: inline-block;
+            background-color: #306ba2;
+            color: white;
+            padding: 12px 40px;
+            border-radius: 30px;
+            font-size: 18px;
+            text-decoration: none;
+            transition: background-color 0.3s, transform 0.15s;
+        " onmouseover="this.style.backgroundColor='#4a90e2'" 
+            onmouseout="this.style.backgroundColor='#306ba2'"
+            onmousedown="this.style.transform='scale(0.96)'"
+            onmouseup="this.style.transform='scale(1)'">
+            回首頁
+        </a>
+        </div>`;
+        document.getElementById("resultContainer").innerHTML = feedback;
+        document.getElementById("resultContainer").classList.add("show");
+
+        const endTime = new Date();
+        const elapsedTimeSec = Math.floor((endTime - startTime) / 1000);
+        const elapsedMinutes = Math.floor(elapsedTimeSec / 60);
+        const elapsedSeconds = elapsedTimeSec % 60;
+        const elapsedTimeFormatted = `${elapsedMinutes}分${elapsedSeconds}秒`;
+
+        // 從 localStorage 取得 userName
+        const userName = localStorage.getItem('userName');
+
+        if (userName) {
+        fetch('/save-result', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                userName: userName,
+                score: score,
+                duration: elapsedTimeFormatted
+            }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('儲存結果成功', data);
+        })
+        .catch(err => {
+            console.error('儲存結果時發生錯誤', err);
+        });
+        } else {
+        console.warn('找不到 userName，請確認使用者有登入');
+        }
+    }
+
+    let timerInterval;
+    let totalSeconds = 15 * 60; // 15分鐘 
+    let startTime;
+
+    function startTimer() {
+        startTime = new Date(); //  開始計時時紀錄
+        updateTimerDisplay();
+
+        timerInterval = setInterval(() => {
+            totalSeconds--;
+            updateTimerDisplay();
+
+            if (totalSeconds === 60) {
+            alert("剩下 1 分鐘，請盡快完成作答！");
+            }
+
+            if (totalSeconds <= 0) {
+            clearInterval(timerInterval);
+            alert("時間到，自動交卷！");
+            document.getElementById("quizForm").requestSubmit();
+            }
+        }, 1000);
+        }
+
+    function updateTimerDisplay() {
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    document.getElementById("timer").textContent = `剩餘時間：${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+    }
+
+
+    window.onload = function() {
+      generateQuestions();
+      document.getElementById("quizForm").addEventListener("submit", checkAnswers);
+      startTimer();
+    };
+  </script>
+
+</head>
+<body>
+    <div id="timer" style="text-align:center; font-size:20px; font-weight:bold; margin-bottom:20px; color: #d41d1d;">
+        剩餘時間：15:00
+    </div>
+  <div id="quizContainer">
+    <h1>國小數學四則運算測驗</h1>
+    <form id="quizForm">
+      <h3>測驗題目</h3>
+      <div id="questions"></div>
+      <button type="submit">提交答案</button>
+    </form>
+  </div>
+  <div id="resultContainer">
+    <h2>測驗結果</h2>
+    <p>請提交測驗以查看您的分數。</p>
+  </div>
+</body>
+</html>

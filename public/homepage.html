@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <title>首頁</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* 設定基本字型 */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+
+        /* 分頁選項卡 */
+        .tabs {
+            display: flex;
+            justify-content: center;
+            background-color: #5b7ea2;
+            padding: 10px 0;
+        }
+
+        .tab {
+            padding: 15px 25px;
+            margin: 0 15px;
+            cursor: pointer;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            font-size: 18px;
+            transition: background-color 0.3s;
+            border-radius: 5px;
+        }
+
+        .tab:hover {
+            background-color: #0056b3;
+        }
+
+        .tab.active {
+            background-color: #0056b3;
+            border-bottom: 3px solid #2f328f;
+        }
+
+        /* 分頁內容 */
+        .tab-content {
+            display: none;
+            padding: 30px;
+            background-color: white;
+            border-radius: 10px;
+            margin: 20px auto;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* 按鈕樣式 */
+        .btn {
+            width: 100%;
+            max-width: 600px;
+            margin: 10px auto;
+            padding: 12px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            transition: transform 0.2s, background-color 0.3s;
+            text-align: center;
+        }
+
+        .btn:hover {
+            transform: scale(1.1);
+            background-color: #218838;
+        }
+
+        /* flush */
+        .list-group-item {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            font-size: 16px;
+            text-align: center;
+            padding: 12px;
+            margin-bottom: 5px;
+            border-radius: 5px;
+            transition: background-color 0.3s, transform 0.2s;
+            width: 100%;
+            max-width: 600px;
+            margin: 10px auto;
+        }
+
+        .list-group-item:hover {
+            background-color: #218838;
+            transform: scale(1.1);
+        }
+
+        .card.card-body {
+            background-color: #f8f9fa;
+            padding: 12px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+            margin: 10px auto;
+        }
+
+        .btn-primary {
+            background-color: #28a745;
+            color: white;
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .btn-primary:hover {
+            background-color: #218838;
+            transform: scale(1.1);
+        }
+
+        /* 小幫手對話框 */
+        .dialog-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #28a745;
+            padding: 15px;
+            border-radius: 10px;
+            background-color: #e9f7e9;
+            max-width: 600px;
+            margin: 20px auto;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+        }
+
+        .helper-image {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin-right: 15px;
+        }
+
+        .dialog-text {
+            font-size: 16px;
+            color: #333;
+            line-height: 1.5;
+        }
+
+        /* 密室逃脫頁用 */
+        #message {
+            display: none;
+            margin-top: 10px;
+            font-size: 18px;
+            color: #333;
+        }
+
+        /* 按鈕文本樣式 */
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            border: none;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        /* 提升移動端兼容性 */
+        @media (max-width: 768px) {
+            .tabs {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn {
+                width: 90%;
+            }
+
+            .list-group-item {
+                width: 90%;
+                font-size: 16px;
+            }
+
+            .card.card-body {
+                width: 90%;
+            }
+
+            .btn-primary {
+                font-size: 14px;
+            }
+
+            .dialog-box {
+                display: flex;
+                align-items: center;
+                border: 2px solid #28a745;
+                padding: 15px;
+                border-radius: 10px;
+                background-color: #e9f7e9;
+                max-width: 350px;
+                margin: 20px auto;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            }
+
+            .helper-image {
+                margin-right: 0;
+                margin-bottom: 10px;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+    <div class="tabs">
+        <!-- 分頁選項卡 -->
+        <button class="tab active" onclick="openPage(event, 'Page1')">學習與模擬</button>
+        <button class="tab" onclick="openPage(event, 'Page2')">密室逃脫</button>
+        <button class="tab" onclick="openPage(event, 'Page3')">總測驗</button>
+    </div>
+
+    <!-- 分頁內容 -->
+    <div id="Page1" class="tab-content active">
+        <h1>學習&模擬</h1>
+        <div class="dialog-box">
+            <!-- 小幫手圖片 -->
+            <img src="pic/helper.jpg" alt="小幫手" class="helper-image" width="60">
+            <!-- 對話框中的文本 -->
+            <div class="dialog-text" id="dialogText">Hello，我是你的學習小夥伴<br>我們一起來學數學吧</div>
+        </div>
+        <p>請選擇你想要學習的單元</p>
+        <a href="learnCh1.html"><button class="btn">單元一 - 加法</button></a><br>
+        <a href="learnCh2.html"><button class="btn">單元二 - 減法</button></a><br>
+        <a href="learnCh3.html"><button class="btn">單元三 - 乘法</button></a><br>        
+        <div class="accordion" id="divisionAccordion" style="width: 100%; max-width: 600px; margin: 10px auto;">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingDivision">
+                    <button class="accordion-button collapsed list-group-item" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDivision" aria-expanded="false" aria-controls="collapseDivision">
+                        單元四 - 除法
+                    </button>
+                </h2>
+                <div id="collapseDivision" class="accordion-collapse collapse" aria-labelledby="headingDivision" data-bs-parent="#divisionAccordion">
+                    <div class="accordion-body card card-body" style="text-align: center; padding: 10px;">
+                        <a href="learnCh4-2.html" class="btn btn-primary" style="margin-bottom: 10px;">除法 - 平分的概念</a>
+                        <a href="learnCh4.html" class="btn btn-primary">除法 - 試題演練</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <a href="learnCh5.html"><button class="btn">單元五 - 括號</button></a><br>
+    </div>
+
+    <div id="Page2" class="tab-content">
+        <h1>密室逃脫</h1>
+        <div class="dialog-box">
+            <img src="pic/helper.jpg" alt="小幫手" class="helper-image" width="60">
+            <div class="dialog-text" id="dialogText">經過前面這麼多練習，相信你可以挑戰更上一層樓的問題對吧！<br>要不要挑戰看看結合了數學跟解謎的密室逃脫呢?</div>
+        </div>
+        <span style="text-align:left;">你需要透過觀察場景跟裡面提供的線索，找出正確的密碼打開鎖就能成功過關囉！</span>
+        <br><br>
+        <a href="escape.html"><button>好啊 GOGO~</button></a>
+        <button id="myButton">先等等，我要再回去複習一下</button>
+        <div id="message"></div>
+    </div>    
+
+    <div id="Page3" class="tab-content">
+        <h1>總測驗</h1><div class="dialog-box">
+            <img src="pic/helper.jpg" alt="小幫手" class="helper-image" width="60">
+            <div class="dialog-text" id="dialogText">準備好跟大家一起解題了嗎?</div>
+        </div>
+        <br>
+        <a href="pk.html"><button>LET'S GO!!</button></a>       
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // 開啟指定的頁面並更新選項卡的樣式
+        function openPage(event, pageId) {
+            // 隱藏所有內容
+            var contents = document.querySelectorAll('.tab-content');
+            contents.forEach(function(content) {
+                content.classList.remove('active');
+            });
+
+            // 移除所有選項卡的活動狀態
+            var tabs = document.querySelectorAll('.tab');
+            tabs.forEach(function(tab) {
+                tab.classList.remove('active');
+            });
+
+            // 顯示所選的內容
+            document.getElementById(pageId).classList.add('active');
+
+            // 設置選項卡為活動狀態
+            event.target.classList.add('active');
+        }
+
+        document.getElementById("myButton").addEventListener("click", function() {
+            showMessage('⚠ 加油，不要放棄!', 'orange');
+        });
+
+        function showMessage(message, color) {
+            const messageDiv = document.createElement('div');
+            messageDiv.textContent = message;
+            messageDiv.style.color = color;
+            messageDiv.style.fontWeight = 'bold';
+            messageDiv.style.fontSize = '20px';
+            messageDiv.style.position = 'fixed';
+            messageDiv.style.top = '50%';
+            messageDiv.style.left = '50%';
+            messageDiv.style.transform = 'translate(-50%, -50%)';
+            messageDiv.style.backgroundColor = 'white';
+            messageDiv.style.padding = '20px';
+            messageDiv.style.border = '2px solid ' + color;
+            messageDiv.style.borderRadius = '10px';
+            messageDiv.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
+            document.body.appendChild(messageDiv);
+
+            // 設置在3秒后自動消失
+            setTimeout(() => {
+                document.body.removeChild(messageDiv);
+            }, 3000);
+        }
+    </script>
+</body>
+
+</html>

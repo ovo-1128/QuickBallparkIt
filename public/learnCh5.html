@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>運算優先順序學習</title>
+    <style>
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+}
+.banner {
+    background-color: #4CAF50;
+    color: white;
+    padding: 15px;
+    font-size: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+.banner a {
+    position: absolute;
+    left: 15px;
+}
+.banner h1, .banner span {
+    flex-grow: 1;
+    text-align: center;
+    margin: 0;
+}
+.content {
+    max-width: 700px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+.dialog-box {
+    border: 1px solid #ddd;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    background-color: #fff;
+    text-align: left;
+    position: relative;
+    transition: all 0.3s ease;
+}
+.dialog-box.highlight-hint {
+    background-color: #ffffe0;
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
+}
+.helper-image {
+    width: 50px;
+    height: 50px;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    border-radius: 50%;
+}
+.dialog-text {
+    margin-left: 70px;
+    line-height: 1.5;
+    font-size: 16px;
+    color: #333;
+}
+.step-container, .dropzone {
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+}
+.step {
+    font-size: 18px;
+    padding: 10px;
+    background-color: white;
+    cursor: grab;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    display: inline-block;
+}
+.dropzone {
+    min-height: 60px;
+    padding: 10px;
+    border: 2px dashed #888;
+    background-color: #f0f0f0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+.incorrect {
+    background-color: #ffdddd;
+    border-color: red;
+}
+button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    cursor: pointer;
+    margin: 5px;
+    font-size: 16px;
+    border-radius: 4px;
+    font-weight: bold;
+}
+button:hover {
+    background-color: #45a049;
+}
+button:disabled {
+    background-color: #d3d3d3;
+    color: #888;
+    cursor: not-allowed;
+}
+.highlight {
+    color: red;
+    font-weight: bold;
+}
+    </style>
+</head>
+<body onload="generateQuestion()">
+<div class="banner">
+    <a href="homepage.html"><button>回主頁面</button></a>
+    <span>括號運算順序學習</span>
+</div>
+<div class="content">
+    <div class="dialog-box" id="dialog-box">
+        <img src="pic/helper.jpg" alt="小老師" class="helper-image">
+        <div class="dialog-text" id="dialogText">不確定的話可以點擊提示按鈕獲得提示喔！</div>
+    </div>
+    <h4>🔎 試著排序這些步驟</h4>
+    <p>按照規則：<span class="highlight">先算括號內的數字</span> → <span class="highlight">再乘除</span> → <span class="highlight">最後加減</span></p>
+    <h3><p class="equation" id="equation">計算中...</p></h3>
+    <div class="step-container" id="step-container"></div>
+    <h3>👉 拖曳正確順序到這裡 (依照第一步、第二步、答案的順序)</h3>
+    <div class="dropzone" id="dropzone" ondragover="allowDrop(event)" ondrop="drop(event)"></div>
+
+    <button onclick="checkOrder()">檢查答案</button>
+    <button id="next-btn" onclick="generateQuestion()" disabled>下一題</button>
+    <button onclick="resetOrder()">重設</button>
+    <button onclick="showHint()">提示</button>
+
+    <div id="result"></div>
+
+    <audio id="hintSound" src="pic/hintSound.mp3"></audio>
+
+    <script>
+        let correctOrder = [];
+
+        function allowDrop(event) { event.preventDefault(); }
+        function drag(event) { event.dataTransfer.setData("text", event.target.id); }
+        function drop(event) {
+            event.preventDefault();
+            let data = event.dataTransfer.getData("text");
+            let element = document.getElementById(data);
+            if (element && !event.currentTarget.contains(element)) {
+                event.currentTarget.appendChild(element);
+            }
+        }
+
+        function checkOrder() {
+            let userSteps = Array.from(document.getElementById("dropzone").children);
+            let incorrectSteps = [];
+
+            if (userSteps.length !== correctOrder.length) {
+                document.getElementById("result").innerText = "❌ 請放入所有步驟！";
+                return;
+            }
+
+            userSteps.forEach((step, index) => {
+                if (parseInt(step.dataset.stepIndex) !== index) {
+                    step.classList.add("incorrect");
+                    incorrectSteps.push(index + 1);
+                } else {
+                    step.classList.remove("incorrect");
+                }
+            });
+
+            if (incorrectSteps.length === 0) {
+                document.getElementById("result").innerText = "🎉 完全正確！";
+                document.getElementById("next-btn").disabled = false;
+            } else {
+                document.getElementById("result").innerText = `⚠️ 第 ${incorrectSteps.join(", ")} 步有誤，請再檢查！`;
+            }
+        }
+
+        function generateQuestion() {
+            resetOrder();
+            let a, b, c, result1, result2;
+            const operators = ['+', '-', '×', '÷'];
+            let valid = false;
+
+            while (!valid) {
+                a = Math.floor(Math.random() * 9) + 2;
+                b = Math.floor(Math.random() * 9) + 2;
+                c = Math.floor(Math.random() * 9) + 2;
+                let op1 = operators[Math.floor(Math.random() * 4)];
+                let op2 = operators[Math.floor(Math.random() * 4)];
+
+                if (op1 === '÷' && a % b !== 0) continue;
+                result1 = eval(`${a} ${op1 === '×' ? '*' : op1 === '÷' ? '/' : op1} ${b}`);
+                if (!Number.isInteger(result1) || result1 < 0) continue;
+
+                if (op2 === '÷' && result1 % c !== 0) continue;
+                result2 = eval(`${result1} ${op2 === '×' ? '*' : op2 === '÷' ? '/' : op2} ${c}`);
+                if (!Number.isInteger(result2) || result2 < 0) continue;
+
+                valid = true;
+
+                correctOrder = [
+                    `(${a} ${op1} ${b}) → ${result1}`,
+                    `${result1} ${op2} ${c} → ${result2}`,
+                    `答案：${result2}`
+                ];
+
+                document.getElementById("equation").innerText = `(${a} ${op1} ${b}) ${op2} ${c}`;
+
+                const shuffledSteps = [...correctOrder].sort(() => Math.random() - 0.5);
+                document.getElementById("step-container").innerHTML = shuffledSteps.map((step, i) =>
+                    `<div class='step' draggable='true' ondragstart='drag(event)' id='step-${i}' data-step-index='${correctOrder.indexOf(step)}'>${step}</div>`
+                ).join('');
+
+                document.getElementById("next-btn").disabled = true;
+                document.getElementById("result").innerText = "";
+                document.getElementById("dialogText").innerText = "不確定的話可以點擊提示按鈕獲得提示喔！";
+                document.getElementById("dialog-box").classList.remove("highlight-hint");
+            }
+        }
+
+        function resetOrder() {
+            const dropzone = document.getElementById("dropzone");
+            const stepContainer = document.getElementById("step-container");
+            while (dropzone.firstChild) {
+                stepContainer.appendChild(dropzone.firstChild);
+            }
+            Array.from(stepContainer.children).forEach(el => el.classList.remove("incorrect"));
+            document.getElementById("result").innerText = "";
+            document.getElementById("next-btn").disabled = true;
+            document.getElementById("dialogText").innerText = "不確定的話可以點擊提示按鈕獲得提示喔！";
+            document.getElementById("dialog-box").classList.remove("highlight-hint");
+        }
+
+        function showHint() {
+            let userSteps = Array.from(document.getElementById("dropzone").children);
+            let hintMessage = "";
+
+            if (userSteps.length === 0) {
+                hintMessage = "請先將所有步驟放入框內！";
+            } else {
+                let incorrectSteps = [];
+
+                userSteps.forEach((step, index) => {
+                    let stepIndex = parseInt(step.dataset.stepIndex);
+                    if (stepIndex !== index) {
+                        incorrectSteps.push(index + 1);
+                    }
+                });
+
+                if (incorrectSteps.length === 0) {
+                    hintMessage = "🎉 你的順序幾乎正確！再確認一下所有步驟是否齊全！";
+                } else {
+                    hintMessage += `⚠️ 這些步驟的順序可能有誤：${incorrectSteps.join(", ")}。\n`;
+                    hintMessage += "👉 提示：先算括號，再乘除，最後加減！";
+                }
+            }
+
+            document.getElementById("dialogText").innerText = hintMessage;
+
+            // 播放提示音效
+            document.getElementById("hintSound").play();
+
+            // 動畫效果閃爍提示框
+            const dialogBox = document.getElementById("dialog-box");
+            dialogBox.classList.add("highlight-hint");
+            setTimeout(() => dialogBox.classList.remove("highlight-hint"), 1000);
+        }
+
+    </script>
+</div>
+</body>
+</html>
