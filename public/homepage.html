@@ -6,7 +6,7 @@
     <title>首頁</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        /* 設定基本字型 */
+        
         body {
             font-family: 'Arial', sans-serif;
             margin: 0;
@@ -14,7 +14,6 @@
             text-align: center;
         }
 
-        /* 分頁選項卡 */
         .tabs {
             display: flex;
             justify-content: center;
@@ -43,7 +42,7 @@
             border-bottom: 3px solid #2f328f;
         }
 
-        /* 分頁內容 */
+        
         .tab-content {
             display: none;
             padding: 30px;
@@ -79,7 +78,6 @@
             background-color: #218838;
         }
 
-        /* flush */
         .list-group-item {
             background-color: #28a745;
             color: white;
@@ -162,7 +160,6 @@
             color: #333;
         }
 
-        /* 按鈕文本樣式 */
         button {
             background-color: #007bff;
             color: white;
@@ -178,7 +175,7 @@
             background-color: #0056b3;
         }
 
-        /* 提升移動端兼容性 */
+        /* 響應式 */
         @media (max-width: 768px) {
             .tabs {
                 flex-direction: column;
@@ -235,9 +232,7 @@
     <div id="Page1" class="tab-content active">
         <h1>學習&模擬</h1>
         <div class="dialog-box">
-            <!-- 小幫手圖片 -->
             <img src="pic/helper.jpg" alt="小幫手" class="helper-image" width="60">
-            <!-- 對話框中的文本 -->
             <div class="dialog-text" id="dialogText">Hello，我是你的學習小夥伴<br>我們一起來學數學吧</div>
         </div>
         <p>請選擇你想要學習的單元</p>
@@ -294,16 +289,13 @@
                 content.classList.remove('active');
             });
 
-            // 移除所有選項卡的活動狀態
             var tabs = document.querySelectorAll('.tab');
             tabs.forEach(function(tab) {
                 tab.classList.remove('active');
             });
 
-            // 顯示所選的內容
             document.getElementById(pageId).classList.add('active');
 
-            // 設置選項卡為活動狀態
             event.target.classList.add('active');
         }
 

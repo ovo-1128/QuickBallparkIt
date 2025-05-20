@@ -6,58 +6,54 @@
     <title>減法學習try</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
-        /* 風格整合的 CSS */
         body {
             font-family: Arial, sans-serif;
             background-color: #f9f9f9;
             text-align: center;
         }
 
-        /* 橫幅 */
         .banner {
-            background-color: #4CAF50; /* 綠色背景 */
-            color: white; /* 白色文字 */
-            padding: 15px; /* 增加內距使得橫幅更高 */
-            font-size: 22px; /* 調整字體大小 */
-            display: flex; /* 使用 flex 布局 */
-            align-items: center; /* 對齊中心 */
-            justify-content: center; /* 內容居中 */
-            position: relative; /* 相對定位 */
+            background-color: #4CAF50; 
+            color: white; 
+            padding: 15px; 
+            font-size: 22px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            position: relative; 
         }
 
-        /* 返回按鈕和標題置中 */
         .banner a {
-            position: absolute; /* 絕對定位，將按鈕放在橫幅的左側 */
-            left: 15px; /* 距離左邊 15px */
+            position: absolute; 
+            left: 15px; 
         }
 
         .banner h1 {
-            flex-grow: 1; /* 占據可用空間 */
-            text-align: center; /* 標題居中 */
-            margin: 0; /* 去除標題外邊距 */
+            flex-grow: 1; 
+            text-align: center; 
+            margin: 0; 
         }
 
-        /* 按鈕樣式 */
         button {
-            background-color: #4CAF50; /* 綠色背景 */
-            color: white; /* 白色文字 */
-            border: none; /* 去除邊框 */
-            padding: 8px 16px; /* 增加內距 */
-            cursor: pointer; /* 鼠標變成指針 */
-            margin: 5px; /* 增加按鈕之間的距離 */
-            font-size: 16px; /* 調整字體大小 */
-            border-radius: 4px; /* 增加圓角 */
-            font-weight: bold; /* 加粗字體 */
+            background-color: #4CAF50; 
+            color: white; 
+            border: none;
+            padding: 8px 16px; 
+            cursor: pointer; 
+            margin: 5px; 
+            font-size: 16px; 
+            border-radius: 4px; 
+            font-weight: bold; 
         }
 
         button:hover {
-            background-color: #45a049; /* 當鼠標懸停時變成稍微淺的綠色 */
+            background-color: #45a049; /*讓鼠標變成淺綠色 */
         }
 
         button:disabled {
-            background-color: #d3d3d3; /* 禁用時變灰 */
-            color: #888; /* 禁用時文字變灰 */
-            cursor: not-allowed; /* 鼠標變成禁止圖標 */
+            background-color: #d3d3d3; 
+            color: #888; 
+            cursor: not-allowed;
         }
 
 
@@ -283,13 +279,12 @@
         let imageInterval;
         let previousAction = "";
 
-        // 隨機生成數字的函式
+        // 隨機生成數字
         function getRandomInt(min, max) {
             return Math.floor(Math.random() * (max - min + 1)) + min;
         }
 
-        // 問題生成函式
- 
+        // 生成問題
         function generateQuestion() {
             var animals = ["綿羊", "牛", "豬", "馬", "兔子"];
             animalIndex = Math.floor(Math.random() * animals.length);
@@ -305,7 +300,8 @@
 
             if (Math.random() < 0.5) {
                 question = generateSubQuestion(animal);  
-            } else {
+            } 
+            else {
                 question = generateRandomQuestion(animal);  
             }
 
@@ -321,7 +317,7 @@
         }
 
 
-        // 步驟處理函式
+        // 處理步驟
         function stepHandler() {
             if (previousAction === "continuous") {
                 clearStepContainer();
@@ -336,12 +332,14 @@
                 showStep(number1, true, `第一步 原本有${number1}隻`, () => {
                     document.querySelector(".step_btn").disabled = false;
                 });
-            } else if (stepCount === 2) {
+            } 
+            else if (stepCount === 2) {
                 // 第二步，賣掉並顯示圖片被打叉的過程
                 showStep(number1, true, `第二步 少了${number2}隻`, () => {
                     document.querySelector(".step_btn").disabled = false;
                 });
-            } else if (stepCount === 3) {
+            } 
+            else if (stepCount === 3) {
                 showStep(number1 - number2, false, `現在剩下${number1}-${number2}=${number1 - number2}隻`, () => {
                     document.getElementById("checkAnswerButton").disabled = false;
                     resetButtons();
@@ -352,159 +350,158 @@
         
         //顯示步驟
         function showStep(count, addBreak, stepTitle, callback) {
-    const container = document.getElementById('stepContainer');
-    const animalImage = `pic/animal${animalIndex + 1}.png`;
+            const container = document.getElementById('stepContainer');
+            const animalImage = `pic/animal${animalIndex + 1}.png`;
 
-    // 清除之前的內容
-    if (stepTitle.includes('少了') || stepTitle.includes('剩下')) {
-        container.innerHTML = ''; // 清空步驟容器，只保留最新一步的展示
-    }
-
-    // 第一階段：顯示所有的圖片
-    if (stepTitle.includes('原本有')) {
-        let counter = 0;
-
-        const title = document.createElement('div');
-        title.classList.add('step-title');
-        title.textContent = stepTitle;
-        container.appendChild(title);
-
-        const showInterval = setInterval(() => {
-            if (counter < count) {
-                const imageWrapper = document.createElement('div');
-                imageWrapper.classList.add('image-wrapper');
-                imageWrapper.style.position = 'relative'; // 確保叉叉能正確定位於圖片上
-
-                const img = document.createElement('img');
-                img.src = animalImage;
-                img.classList.add('image');
-
-                imageWrapper.appendChild(img);
-                container.appendChild(imageWrapper);
-
-                counter++;
-            } else {
-                clearInterval(showInterval);
-                callback(); // 完成顯示後執行回調
+            // 清除之前的內容
+            if (stepTitle.includes('少了') || stepTitle.includes('剩下')) {
+                container.innerHTML = ''; // 清空步驟容器，只保留最新一步的展示
             }
-        }, 500);
-    }
 
-    // 第二階段：顯示賣掉的步驟，從右至左打叉符號
-    if (stepTitle.includes('少了')) {
-        // 標題
-        const title = document.createElement('div');
-        title.classList.add('step-title');
-        title.textContent = stepTitle;
-        container.appendChild(title);
+            // 第一階段：顯示圖片
+            if (stepTitle.includes('原本有')) {
+                let counter = 0;
 
-        // 先顯示所有圖片（與第一步相同的圖片）
-        for (let i = 0; i < count; i++) {
-            const imageWrapper = document.createElement('div');
-            imageWrapper.classList.add('image-wrapper');
-            imageWrapper.style.position = 'relative'; // 確保叉叉能正確定位於圖片上
+                const title = document.createElement('div');
+                title.classList.add('step-title');
+                title.textContent = stepTitle;
+                container.appendChild(title);
 
-            const img = document.createElement('img');
-            img.src = animalImage;
-            img.classList.add('image');
+                const showInterval = setInterval(() => {
+                    if (counter < count) {
+                        const imageWrapper = document.createElement('div');
+                        imageWrapper.classList.add('image-wrapper');
+                        imageWrapper.style.position = 'relative'; // 確保叉叉能正確定位於圖片上
 
-            imageWrapper.appendChild(img);
-            container.appendChild(imageWrapper);
-        }
+                        const img = document.createElement('img');
+                        img.src = animalImage;
+                        img.classList.add('image');
 
-        // 延遲開始加上打叉叉的動作
-        setTimeout(() => {
-            let crossCounter = count - 1;
-            const crossInterval = setInterval(() => {
-                if (crossCounter >= count - number2) {
-                    // 對最右邊的圖片加上打叉符號
-                    const imageWrapper = container.children[crossCounter + 1]; // 跳過標題的第一個元素
-                    if (imageWrapper) {
-                        const crossMark = document.createElement('div');
-                        crossMark.style.position = 'absolute';
-                        crossMark.style.top = '0';
-                        crossMark.style.left = '0';
-                        crossMark.style.width = '100%';
-                        crossMark.style.height = '100%';
-                        crossMark.style.backgroundColor = 'rgba(255, 0, 0, 0.5)';
-                        crossMark.style.display = 'flex';
-                        crossMark.style.justifyContent = 'center';
-                        crossMark.style.alignItems = 'center';
-                        crossMark.style.color = 'white';
-                        crossMark.style.fontWeight = 'bold';
-                        crossMark.style.fontSize = '30px';
-                        crossMark.textContent = 'X';
+                        imageWrapper.appendChild(img);
+                        container.appendChild(imageWrapper);
 
-                        imageWrapper.appendChild(crossMark);
+                        counter++;
+                    } 
+                    else {
+                        clearInterval(showInterval);
+                        callback(); // 完成顯示後執行回調
                     }
-                    crossCounter--;
-                } else {
-                    clearInterval(crossInterval);
-                    callback(); // 打叉完成後執行回調以進行下一步
+                }, 500);
+            }
+
+            // 第二階段：顯示賣掉的步驟(從右至左打叉)
+            if (stepTitle.includes('少了')) {
+                // 標題
+                const title = document.createElement('div');
+                title.classList.add('step-title');
+                title.textContent = stepTitle;
+                container.appendChild(title);
+
+                // 先顯示所有圖片（與第一步相同的圖片）
+                for (let i = 0; i < count; i++) {
+                    const imageWrapper = document.createElement('div');
+                    imageWrapper.classList.add('image-wrapper');
+                    imageWrapper.style.position = 'relative'; // 確保叉叉能正確定位於圖片上
+
+                    const img = document.createElement('img');
+                    img.src = animalImage;
+                    img.classList.add('image');
+
+                    imageWrapper.appendChild(img);
+                    container.appendChild(imageWrapper);
                 }
-            }, 500);
-        }, 1000);
-    }
 
-    // 第三階段：顯示剩餘的結果
-    if (stepTitle.includes('剩下')) {
-        const title = document.createElement('div');
-        title.classList.add('step-title');
-        title.textContent = stepTitle;
-        container.appendChild(title);
+                // 延遲開始加上打叉叉的動作
+                setTimeout(() => {
+                    let crossCounter = count - 1;
+                    const crossInterval = setInterval(() => {
+                        if (crossCounter >= count - number2) {
+                            // 對最右邊的圖片加上打叉符號
+                            const imageWrapper = container.children[crossCounter + 1]; // 跳過標題的第一個元素
+                            if (imageWrapper) {
+                                const crossMark = document.createElement('div');
+                                crossMark.style.position = 'absolute';
+                                crossMark.style.top = '0';
+                                crossMark.style.left = '0';
+                                crossMark.style.width = '100%';
+                                crossMark.style.height = '100%';
+                                crossMark.style.backgroundColor = 'rgba(255, 0, 0, 0.5)';
+                                crossMark.style.display = 'flex';
+                                crossMark.style.justifyContent = 'center';
+                                crossMark.style.alignItems = 'center';
+                                crossMark.style.color = 'white';
+                                crossMark.style.fontWeight = 'bold';
+                                crossMark.style.fontSize = '30px';
+                                crossMark.textContent = 'X';
 
-        // 顯示剩餘的圖片
-        for (let i = 0; i < count; i++) {
-            const imageWrapper = document.createElement('div');
-            imageWrapper.classList.add('image-wrapper');
-            imageWrapper.style.position = 'relative';
+                                imageWrapper.appendChild(crossMark);
+                            }
+                            crossCounter--;
+                        } 
+                        else {
+                            clearInterval(crossInterval);
+                            callback(); 
+                        }
+                    }, 500);
+                }, 1000);
+            }
 
-            const img = document.createElement('img');
-            img.src = animalImage;
-            img.classList.add('image');
+            // 第三階段：顯示剩餘的結果
+            if (stepTitle.includes('剩下')) {
+                const title = document.createElement('div');
+                title.classList.add('step-title');
+                title.textContent = stepTitle;
+                container.appendChild(title);
 
-            imageWrapper.appendChild(img);
-            container.appendChild(imageWrapper);
+                // 顯示剩餘的圖片
+                for (let i = 0; i < count; i++) {
+                    const imageWrapper = document.createElement('div');
+                    imageWrapper.classList.add('image-wrapper');
+                    imageWrapper.style.position = 'relative';
+
+                    const img = document.createElement('img');
+                    img.src = animalImage;
+                    img.classList.add('image');
+
+                    imageWrapper.appendChild(img);
+                    container.appendChild(imageWrapper);
+                }
+
+                callback();
+            }
         }
 
-        // 調用回調以允許繼續
-        callback();
-    }
-}
-
-
-
-        // 連續解題的函式
+        // 連續解題
         function continuousHandler() {
-        if (previousAction === "step") {
+            if (previousAction === "step") {
+                clearStepContainer();
+            }
+            previousAction = "continuous";
+
+            document.querySelector(".conti_btn").disabled = true;
+            document.querySelector(".step_btn").disabled = true;
+            document.getElementById("checkAnswerButton").disabled = true;
             clearStepContainer();
-        }
-        previousAction = "continuous";
 
-        document.querySelector(".conti_btn").disabled = true;
-        document.querySelector(".step_btn").disabled = true;
-        document.getElementById("checkAnswerButton").disabled = true;
-        clearStepContainer();
-
-        // 第一階段，顯示所有的圖片
-        showStep(number1, true, `第一步 原本有${number1}隻`, () => {
-            // 第二階段，從右到左打叉叉符號
-            showStep(number1, true, `第二步 少了${number2}隻`, () => {
-                // 第三階段，顯示最終的剩餘數量
-                showStep(number1 - number2, false, `現在剩下${number1}-${number2}=${number1 - number2}隻`, () => {
-                    document.getElementById("checkAnswerButton").disabled = false;
-                    resetButtons();
+            // 第一階段，顯示所有的圖片
+            showStep(number1, true, `第一步 原本有${number1}隻`, () => {
+                // 第二階段，從右到左打叉
+                showStep(number1, true, `第二步 少了${number2}隻`, () => {
+                    // 第三階段，顯示最終的剩餘數量
+                    showStep(number1 - number2, false, `現在剩下${number1}-${number2}=${number1 - number2}隻`, () => {
+                        document.getElementById("checkAnswerButton").disabled = false;
+                        resetButtons();
+                    });
                 });
             });
-        });
-    }
+        }
 
         // 清空步驟容器
         function clearStepContainer() {
             document.getElementById("stepContainer").innerHTML = "";
         }
 
-        // 檢查答案的函式
+        // 檢查答案
         function checkAnswer() {
             const expressionInput = document.getElementById('expressionInput').value.trim();
             const resultInput = document.getElementById('resultInput').value.trim();
@@ -528,17 +525,20 @@
                 if (!correctQuestions.some(q => q.question === correctExpression)) {
                     correctQuestions.push({ question: correctExpression, answer: correctResult, number1: number1, number2: number2 });
                 }
-            } else if (!isExpressionCorrect && isResultCorrect) {
+            } 
+            else if (!isExpressionCorrect && isResultCorrect) {
                 dialogText.innerHTML = `<span style="color: orange;">列式錯了但答案正確，再想想列式怎麼寫。</span>`;
                 if (!incorrectQuestions.some(q => q.question === correctExpression)) {
                     incorrectQuestions.push({ question: correctExpression, answer: correctResult, number1: number1, number2: number2 });
                 }
-            } else if (isExpressionCorrect && !isResultCorrect) {
+            } 
+            else if (isExpressionCorrect && !isResultCorrect) {
                 dialogText.innerHTML = `<span style="color: orange;">列式正確，但答案錯誤。試著再計算一次。</span>`;
                 if (!incorrectQuestions.some(q => q.question === correctExpression)) {
                     incorrectQuestions.push({ question: correctExpression, answer: correctResult, number1: number1, number2: number2 });
                 }
-            } else {
+            } 
+            else {
                 dialogText.innerHTML = `<span style="color: red;">列式錯誤，答案也錯誤，再接再厲！</span>`;
                 if (!incorrectQuestions.some(q => q.question === correctExpression)) {
                     incorrectQuestions.push({ question: correctExpression, answer: correctResult, number1: number1, number2: number2 });
@@ -559,12 +559,13 @@
             clearStepContainer();
         }
 
-        // 小白板的開關函式
+        // 小白板的開關
         function toggleWhiteboard() {
             const whiteboard = document.getElementById('whiteboard');
             if (whiteboard.style.display === 'none' || whiteboard.style.display === '') {
                 whiteboard.style.display = 'flex';
-            } else {
+            } 
+            else {
                 whiteboard.style.display = 'none';
             }
         }
@@ -606,242 +607,244 @@
             if (recordContainer.style.display === "none" || recordContainer.style.display === "") {
                 showAllQuestions();
                 recordContainer.style.display = "block";
-            } else {
+            } 
+            else {
                 recordContainer.style.display = "none";
             }
         }
 
         // 顯示所有答題記錄的函式
-function showAllQuestions() {
-    const allQuestions = incorrectQuestions.concat(correctQuestions.filter(q => !incorrectQuestions.some(incQ => incQ.question === q.question)));
-    const recordContainer = document.getElementById("recordContainer");
-    recordContainer.innerHTML = "";
+        function showAllQuestions() {
+            const allQuestions = incorrectQuestions.concat(correctQuestions.filter(q => !incorrectQuestions.some(incQ => incQ.question === q.question)));
+            const recordContainer = document.getElementById("recordContainer");
+            recordContainer.innerHTML = "";
 
-    allQuestions.forEach((q, index) => {
-        const isIncorrect = incorrectQuestions.includes(q);
-        const card = document.createElement("div");
-        card.classList.add("card");
-        if (isIncorrect) {
-            card.style.backgroundColor = "#fe0f00";
+            allQuestions.forEach((q, index) => {
+                const isIncorrect = incorrectQuestions.includes(q);
+                const card = document.createElement("div");
+                card.classList.add("card");
+                if (isIncorrect) {
+                    card.style.backgroundColor = "#fe0f00";
+                }
+
+                const cardHeader = document.createElement("div");
+                cardHeader.classList.add("card-header");
+                cardHeader.id = `heading${index}`;
+
+                const h2 = document.createElement("h2");
+
+                const button = document.createElement("button");
+                button.classList.add("btn", "btn-link", "btn-block", "text-left");
+                button.setAttribute("type", "button");
+                button.setAttribute("data-toggle", "collapse");
+                button.setAttribute("data-target", `#collapse${index}`);
+                button.setAttribute("aria-expanded", "true");
+                button.setAttribute("aria-controls", `collapse${index}`);
+                button.textContent = `${q.question} = ${q.answer}`;
+
+                h2.appendChild(button);
+                cardHeader.appendChild(h2);
+                card.appendChild(cardHeader);
+
+                const collapseDiv = document.createElement("div");
+                collapseDiv.id = `collapse${index}`;
+                collapseDiv.classList.add("collapse");
+                collapseDiv.setAttribute("aria-labelledby", `heading${index}`);
+                collapseDiv.setAttribute("data-parent", "#recordContainer");
+                collapseDiv.style.backgroundColor = "#fff";
+
+                const cardBody = document.createElement("div");
+                cardBody.classList.add("card-body");
+                cardBody.innerHTML = `<button class='step_btn' onclick='stepHandlerFromRecord(${index})'>逐步解題</button>
+                <button class='conti_btn' onclick='continuousHandlerFromRecord(${index})'>連續解題</button>
+                <div id='stepContainer${index}'></div>`;
+
+                collapseDiv.appendChild(cardBody);
+                card.appendChild(collapseDiv);
+                recordContainer.appendChild(card);
+            });
         }
+        // 記錄每個題目當前的步驟計數
+        let stepCounts = {};
 
-        const cardHeader = document.createElement("div");
-        cardHeader.classList.add("card-header");
-        cardHeader.id = `heading${index}`;
-
-        const h2 = document.createElement("h2");
-
-        const button = document.createElement("button");
-        button.classList.add("btn", "btn-link", "btn-block", "text-left");
-        button.setAttribute("type", "button");
-        button.setAttribute("data-toggle", "collapse");
-        button.setAttribute("data-target", `#collapse${index}`);
-        button.setAttribute("aria-expanded", "true");
-        button.setAttribute("aria-controls", `collapse${index}`);
-        button.textContent = `${q.question} = ${q.answer}`;
-
-        h2.appendChild(button);
-        cardHeader.appendChild(h2);
-        card.appendChild(cardHeader);
-
-        const collapseDiv = document.createElement("div");
-        collapseDiv.id = `collapse${index}`;
-        collapseDiv.classList.add("collapse");
-        collapseDiv.setAttribute("aria-labelledby", `heading${index}`);
-        collapseDiv.setAttribute("data-parent", "#recordContainer");
-        collapseDiv.style.backgroundColor = "#fff";
-
-        const cardBody = document.createElement("div");
-        cardBody.classList.add("card-body");
-        cardBody.innerHTML = `<button class='step_btn' onclick='stepHandlerFromRecord(${index})'>逐步解題</button>
-        <button class='conti_btn' onclick='continuousHandlerFromRecord(${index})'>連續解題</button>
-        <div id='stepContainer${index}'></div>`;
-
-        collapseDiv.appendChild(cardBody);
-        card.appendChild(collapseDiv);
-        recordContainer.appendChild(card);
-    });
-}
-// 用於記錄每個題目當前的步驟計數
-let stepCounts = {};
-
-function stepHandlerFromRecord(index) {
-    // 如果步驟計數不存在，初始化為 0
-    if (stepCounts[index] === undefined) {
-        stepCounts[index] = 0;
-    }
-
-    const q = incorrectQuestions.concat(correctQuestions.filter(q => !incorrectQuestions.some(incQ => incQ.question === q.question)))[index];
-    const { number1, number2 } = q;
-    const container = document.getElementById(`stepContainer${index}`);
-    const animalImage = `pic/animal${animalIndex + 1}.png`;
-
-    if (stepCounts[index] === 0) {
-        // 顯示第一步，原本有多少隻
-        container.innerHTML = '';  // 清空之前的步驟
-        const title = document.createElement('div');
-        title.classList.add('step-title');
-        title.textContent = `第一步 原本有${number1}隻`;
-        container.appendChild(title);
-
-        for (let i = 0; i < number1; i++) {
-            const imageWrapper = document.createElement('div');
-            imageWrapper.classList.add('image-wrapper');
-            imageWrapper.style.position = 'relative';
-
-            const img = document.createElement('img');
-            img.src = animalImage;
-            img.classList.add('image');
-
-            imageWrapper.appendChild(img);
-            container.appendChild(imageWrapper);
-        }
-        stepCounts[index]++;
-    } else if (stepCounts[index] === 1) {
-        // 顯示第二步，賣掉多少隻，從右到左打叉
-        const title = document.createElement('div');
-        title.classList.add('step-title');
-        title.textContent = `第二步 少了${number2}隻`;
-        container.appendChild(title);
-
-        let crossCounter = number1 - 1;
-        const crossInterval = setInterval(() => {
-            if (crossCounter >= number1 - number2) {
-                const imageWrapper = container.children[crossCounter + 1]; // 跳過標題元素
-                const crossMark = document.createElement('div');
-                crossMark.style.position = 'absolute';
-                crossMark.style.top = '0';
-                crossMark.style.left = '0';
-                crossMark.style.width = '100%';
-                crossMark.style.height = '100%';
-                crossMark.style.backgroundColor = 'rgba(255, 0, 0, 0.5)';
-                crossMark.style.display = 'flex';
-                crossMark.style.justifyContent = 'center';
-                crossMark.style.alignItems = 'center';
-                crossMark.style.color = 'white';
-                crossMark.style.fontWeight = 'bold';
-                crossMark.style.fontSize = '30px';
-                crossMark.textContent = 'X';
-
-                imageWrapper.appendChild(crossMark);
-                crossCounter--;
-            } else {
-                clearInterval(crossInterval);
-                stepCounts[index]++;
+        function stepHandlerFromRecord(index) {
+            // 如果步驟計數不存在，初始化為 0
+            if (stepCounts[index] === undefined) {
+                stepCounts[index] = 0;
             }
-        }, 500);
-    } else if (stepCounts[index] === 2) {
-        // 顯示第三步，剩餘的動物數量
-        const title = document.createElement('div');
-        title.classList.add('step-title');
-        title.textContent = `現在剩下${number1} - ${number2} = ${number1 - number2}隻`;
-        container.appendChild(title);
 
-        for (let i = 0; i < number1 - number2; i++) {
-            const imageWrapper = document.createElement('div');
-            imageWrapper.classList.add('image-wrapper');
-            imageWrapper.style.position = 'relative';
+            const q = incorrectQuestions.concat(correctQuestions.filter(q => !incorrectQuestions.some(incQ => incQ.question === q.question)))[index];
+            const { number1, number2 } = q;
+            const container = document.getElementById(`stepContainer${index}`);
+            const animalImage = `pic/animal${animalIndex + 1}.png`;
 
-            const img = document.createElement('img');
-            img.src = animalImage;
-            img.classList.add('image');
+            if (stepCounts[index] === 0) {
+                // 顯示第一步，原本有多少隻
+                container.innerHTML = '';  // 清空之前的步驟
+                const title = document.createElement('div');
+                title.classList.add('step-title');
+                title.textContent = `第一步 原本有${number1}隻`;
+                container.appendChild(title);
 
-            imageWrapper.appendChild(img);
-            container.appendChild(imageWrapper);
-        }
-        stepCounts[index]++;
-    }
-}
+                for (let i = 0; i < number1; i++) {
+                    const imageWrapper = document.createElement('div');
+                    imageWrapper.classList.add('image-wrapper');
+                    imageWrapper.style.position = 'relative';
 
+                    const img = document.createElement('img');
+                    img.src = animalImage;
+                    img.classList.add('image');
 
+                    imageWrapper.appendChild(img);
+                    container.appendChild(imageWrapper);
+                }
+                stepCounts[index]++;
+            } 
+            else if (stepCounts[index] === 1) {
+                // 顯示第二步，賣掉多少隻，從右到左打叉
+                const title = document.createElement('div');
+                title.classList.add('step-title');
+                title.textContent = `第二步 少了${number2}隻`;
+                container.appendChild(title);
 
-// 從記錄中連續解題的函數
-function continuousHandlerFromRecord(index) {
-    const q = incorrectQuestions.concat(correctQuestions.filter(q => !incorrectQuestions.some(incQ => incQ.question === q.question)))[index];
-    const { number1, number2 } = q;
-    const container = document.getElementById(`stepContainer${index}`);
-    const animalImage = `pic/animal${animalIndex + 1}.png`;
+                let crossCounter = number1 - 1;
+                const crossInterval = setInterval(() => {
+                    if (crossCounter >= number1 - number2) {
+                        const imageWrapper = container.children[crossCounter + 1]; // 跳過標題元素
+                        const crossMark = document.createElement('div');
+                        crossMark.style.position = 'absolute';
+                        crossMark.style.top = '0';
+                        crossMark.style.left = '0';
+                        crossMark.style.width = '100%';
+                        crossMark.style.height = '100%';
+                        crossMark.style.backgroundColor = 'rgba(255, 0, 0, 0.5)';
+                        crossMark.style.display = 'flex';
+                        crossMark.style.justifyContent = 'center';
+                        crossMark.style.alignItems = 'center';
+                        crossMark.style.color = 'white';
+                        crossMark.style.fontWeight = 'bold';
+                        crossMark.style.fontSize = '30px';
+                        crossMark.textContent = 'X';
 
-    container.innerHTML = '';  // 清空之前的步驟
-
-    // 第一步，顯示原本有多少隻
-    const title1 = document.createElement('div');
-    title1.classList.add('step-title');
-    title1.textContent = `第一步 原本有${number1}隻`;
-    container.appendChild(title1);
-
-    for (let i = 0; i < number1; i++) {
-        const imageWrapper = document.createElement('div');
-        imageWrapper.classList.add('image-wrapper');
-        imageWrapper.style.position = 'relative';
-
-        const img = document.createElement('img');
-        img.src = animalImage;
-        img.classList.add('image');
-
-        imageWrapper.appendChild(img);
-        container.appendChild(imageWrapper);
-    }
-
-    // 第二步，賣掉多少隻
-    setTimeout(() => {
-        const title2 = document.createElement('div');
-        title2.classList.add('step-title');
-        title2.textContent = `第二步 少了${number2}隻`;
-        container.appendChild(title2);
-
-        let crossCounter = number1 - 1;
-        const crossInterval = setInterval(() => {
-            if (crossCounter >= number1 - number2) {
-                const imageWrapper = container.children[crossCounter + 1]; // 跳過標題元素
-                const crossMark = document.createElement('div');
-                crossMark.style.position = 'absolute';
-                crossMark.style.top = '0';
-                crossMark.style.left = '0';
-                crossMark.style.width = '100%';
-                crossMark.style.height = '100%';
-                crossMark.style.backgroundColor = 'rgba(255, 0, 0, 0.5)';
-                crossMark.style.display = 'flex';
-                crossMark.style.justifyContent = 'center';
-                crossMark.style.alignItems = 'center';
-                crossMark.style.color = 'white';
-                crossMark.style.fontWeight = 'bold';
-                crossMark.style.fontSize = '30px';
-                crossMark.textContent = 'X';
-
-                imageWrapper.appendChild(crossMark);
-                crossCounter--;
-            } else {
-                clearInterval(crossInterval);
-
-                // 第三步，顯示剩餘數量
-                setTimeout(() => {
-                    const title3 = document.createElement('div');
-                    title3.classList.add('step-title');
-                    title3.textContent = `現在剩下${number1} - ${number2} = ${number1 - number2}隻`;
-                    container.appendChild(title3);
-
-                    for (let i = 0; i < number1 - number2; i++) {
-                        const imageWrapper = document.createElement('div');
-                        imageWrapper.classList.add('image-wrapper');
-                        imageWrapper.style.position = 'relative';
-
-                        const img = document.createElement('img');
-                        img.src = animalImage;
-                        img.classList.add('image');
-
-                        imageWrapper.appendChild(img);
-                        container.appendChild(imageWrapper);
+                        imageWrapper.appendChild(crossMark);
+                        crossCounter--;
+                    } 
+                    else {
+                        clearInterval(crossInterval);
+                        stepCounts[index]++;
                     }
                 }, 500);
             }
-        }, 500);
-    }, 1000);
-}
+            else if (stepCounts[index] === 2) {
+                // 顯示第三步，剩餘的動物數量
+                const title = document.createElement('div');
+                title.classList.add('step-title');
+                title.textContent = `現在剩下${number1} - ${number2} = ${number1 - number2}隻`;
+                container.appendChild(title);
+
+                for (let i = 0; i < number1 - number2; i++) {
+                    const imageWrapper = document.createElement('div');
+                    imageWrapper.classList.add('image-wrapper');
+                    imageWrapper.style.position = 'relative';
+
+                    const img = document.createElement('img');
+                    img.src = animalImage;
+                    img.classList.add('image');
+
+                    imageWrapper.appendChild(img);
+                    container.appendChild(imageWrapper);
+                }
+                stepCounts[index]++;
+            }
+        }
 
 
+        // 從記錄中連續解題的函數
+        function continuousHandlerFromRecord(index) {
+            const q = incorrectQuestions.concat(correctQuestions.filter(q => !incorrectQuestions.some(incQ => incQ.question === q.question)))[index];
+            const { number1, number2 } = q;
+            const container = document.getElementById(`stepContainer${index}`);
+            const animalImage = `pic/animal${animalIndex + 1}.png`;
 
-        // 重置按鈕的啟用狀態
+            container.innerHTML = '';  // 清空之前的步驟
+
+            // 第一步，顯示原本有多少隻
+            const title1 = document.createElement('div');
+            title1.classList.add('step-title');
+            title1.textContent = `第一步 原本有${number1}隻`;
+            container.appendChild(title1);
+
+            for (let i = 0; i < number1; i++) {
+                const imageWrapper = document.createElement('div');
+                imageWrapper.classList.add('image-wrapper');
+                imageWrapper.style.position = 'relative';
+
+                const img = document.createElement('img');
+                img.src = animalImage;
+                img.classList.add('image');
+
+                imageWrapper.appendChild(img);
+                container.appendChild(imageWrapper);
+            }
+
+            // 第二步，賣掉多少隻
+            setTimeout(() => {
+                const title2 = document.createElement('div');
+                title2.classList.add('step-title');
+                title2.textContent = `第二步 少了${number2}隻`;
+                container.appendChild(title2);
+
+                let crossCounter = number1 - 1;
+                const crossInterval = setInterval(() => {
+                    if (crossCounter >= number1 - number2) {
+                        const imageWrapper = container.children[crossCounter + 1]; // 跳過標題元素
+                        const crossMark = document.createElement('div');
+                        crossMark.style.position = 'absolute';
+                        crossMark.style.top = '0';
+                        crossMark.style.left = '0';
+                        crossMark.style.width = '100%';
+                        crossMark.style.height = '100%';
+                        crossMark.style.backgroundColor = 'rgba(255, 0, 0, 0.5)';
+                        crossMark.style.display = 'flex';
+                        crossMark.style.justifyContent = 'center';
+                        crossMark.style.alignItems = 'center';
+                        crossMark.style.color = 'white';
+                        crossMark.style.fontWeight = 'bold';
+                        crossMark.style.fontSize = '30px';
+                        crossMark.textContent = 'X';
+
+                        imageWrapper.appendChild(crossMark);
+                        crossCounter--;
+                    } 
+                    else {
+                        clearInterval(crossInterval);
+
+                        // 第三步，顯示剩餘數量
+                        setTimeout(() => {
+                            const title3 = document.createElement('div');
+                            title3.classList.add('step-title');
+                            title3.textContent = `現在剩下${number1} - ${number2} = ${number1 - number2}隻`;
+                            container.appendChild(title3);
+
+                            for (let i = 0; i < number1 - number2; i++) {
+                                const imageWrapper = document.createElement('div');
+                                imageWrapper.classList.add('image-wrapper');
+                                imageWrapper.style.position = 'relative';
+
+                                const img = document.createElement('img');
+                                img.src = animalImage;
+                                img.classList.add('image');
+
+                                imageWrapper.appendChild(img);
+                                container.appendChild(imageWrapper);
+                            }
+                        }, 500);
+                    }
+                }, 500);
+            }, 1000);
+        }
+
+        // 重置按鈕的狀態
         function resetButtons() {
             document.querySelector(".step_btn").disabled = false;
             document.querySelector(".conti_btn").disabled = false;

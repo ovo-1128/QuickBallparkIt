@@ -6,7 +6,6 @@
     <title>加法學習</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
-        /* 橫幅 */
         .banner {
             background-color: #4CAF50;
             color: white;
@@ -18,7 +17,6 @@
             position: relative;
         }
 
-        /* 返回按鈕和標題置中 */
         .banner a {
             position: absolute;
             left: 15px;
@@ -297,14 +295,14 @@
 
             var question = "";
 
-        if (Math.random() < 0.5) {
-           question = generateAdditionQuestion(animal);
-        } 
-        else {
-            question = generateRandomQuestion(animal);
-        }
+            if (Math.random() < 0.5) {
+                question = generateAdditionQuestion(animal);
+            } 
+            else {
+                question = generateRandomQuestion(animal);
+            }
 
-        document.getElementById("question").innerHTML = question;
+            document.getElementById("question").innerHTML = question;
         }
 
         function getRandomInt(min, max) {
@@ -371,10 +369,11 @@
                     container.appendChild(imageWrapper);
 
                     counter++;
-                } else {
+                } 
+                else {
                     if (addBreak) container.appendChild(document.createElement('br'));
-                    clearInterval(imageInterval);
-                    callback();
+                        clearInterval(imageInterval);
+                        callback();
                 }
             }, 500);
         }
@@ -414,17 +413,20 @@
                 if (!correctQuestions.some(q => q.question === correctExpression1)) {
                     correctQuestions.push({ question: correctExpression1, answer: correctResult, number1: number1, number2: number2 });
                 }
-            } else if (!isExpressionCorrect && isResultCorrect) {
+            } 
+            else if (!isExpressionCorrect && isResultCorrect) {
                 dialogText.innerHTML = `<span style="color: orange;">列式錯了但答案正確，再想想列式怎麼寫。</span>`;
                 if (!incorrectQuestions.some(q => q.question === correctExpression1)) {
                     incorrectQuestions.push({ question: correctExpression1, answer: correctResult, number1: number1, number2: number2 });
                 }
-            } else if (isExpressionCorrect && !isResultCorrect) {
+            } 
+            else if (isExpressionCorrect && !isResultCorrect) {
                 dialogText.innerHTML = `<span style="color: orange;">列式正確，但答案錯誤。試著再計算一次。</span>`;
                 if (!incorrectQuestions.some(q => q.question === correctExpression1)) {
                     incorrectQuestions.push({ question: correctExpression1, answer: correctResult, number1: number1, number2: number2 });
                 }
-            } else {
+            } 
+            else {
                 dialogText.innerHTML = `<span style="color: red;">答錯了，再試一次！</span>`;
                 if (!incorrectQuestions.some(q => q.question === correctExpression1)) {
                     incorrectQuestions.push({ question: correctExpression1, answer: correctResult, number1: number1, number2: number2 });
@@ -448,12 +450,13 @@
             document.getElementById('dialogText').textContent = '哈囉，我們現在要學的是「加法」，先來一起看看「加法」是什麼吧!';
         }
 
-        // 小白板的開關函式
+        // 小白板的開關
         function toggleWhiteboard() {
             const whiteboard = document.getElementById('whiteboard');
             if (whiteboard.style.display === 'none' || whiteboard.style.display === '') {
                 whiteboard.style.display = 'flex';
-            } else {
+            } 
+            else {
                 whiteboard.style.display = 'none';
             }
         }
@@ -489,18 +492,19 @@
             ctx.clearRect(0, 0, whiteboardCanvas.width, whiteboardCanvas.height);
         }
 
-        // 顯示或隱藏答題記錄的函式
+        // 顯示或隱藏答題記錄
         function toggleRecordContainer() {
             const recordContainer = document.getElementById("recordContainer");
             if (recordContainer.style.display === "none" || recordContainer.style.display === "") {
                 showAllQuestions();
                 recordContainer.style.display = "block";
-            } else {
+            } 
+            else {
                 recordContainer.style.display = "none";
             }
         }
 
-        // 顯示所有答題記錄的函式
+        // 顯示所有答題記錄
         function showAllQuestions() {
             const allQuestions = incorrectQuestions.concat(correctQuestions.filter(q => !incorrectQuestions.some(incQ => incQ.question === q.question)));
             const recordContainer = document.getElementById("recordContainer");
@@ -533,7 +537,7 @@
             });
         }
 
-        // 用於記錄每個題目當前的步驟計數
+        // 記錄每個題目當前的步驟計數
         let stepCounts = {};
 
         function stepHandlerFromRecord(index) {
@@ -566,7 +570,8 @@
                     container.appendChild(imageWrapper);
                 }
                 stepCounts[index]++;
-            } else if (stepCounts[index] === 1) {
+            } 
+            else if (stepCounts[index] === 1) {
                 const title = document.createElement('div');
                 title.classList.add('step-title');
                 title.textContent = `第二步 又有${number2}隻`;
@@ -585,7 +590,8 @@
                     container.appendChild(imageWrapper);
                 }
                 stepCounts[index]++;
-            } else if (stepCounts[index] === 2) {
+            } 
+            else if (stepCounts[index] === 2) {
                 const title = document.createElement('div');
                 title.classList.add('step-title');
                 title.textContent = `現在總共有${number1} + ${number2} = ${number1 + number2}隻`;

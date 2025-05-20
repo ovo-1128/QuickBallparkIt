@@ -5,7 +5,6 @@
     <title>CH3 - 乘法學習</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
-        /* 基本頁面 */
         body {
             font-family: Arial, sans-serif;
             background-color: #f9f9f9;
@@ -13,7 +12,7 @@
             margin: 0;
             padding: 0;
         }
-        /* 橫幅 */
+        
         .banner {
             background-color: #4CAF50;
             color: white;
@@ -24,7 +23,7 @@
             justify-content: center;
             position: relative;
         }
-        /* 返回按鈕和標題置中 */
+        
         .banner a {
             position: absolute;
             left: 15px;
@@ -60,7 +59,7 @@
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
-        /* 對話框 */
+        
         .dialog-box {
             border: 1px solid #ddd;
             padding: 15px;
@@ -84,7 +83,7 @@
             font-size: 16px;
             color: #333;
         }
-        /* 動態 */
+        
         #stepContainer {
             clear: both;
             margin-top: 10px;
@@ -98,7 +97,7 @@
             opacity: 0;
             transition: opacity 0.5s;
         }
-        /* 成就感動畫 */
+        
         .success-animation {
             font-size: 24px;
             color: #4CAF50;
@@ -316,195 +315,194 @@
         }
 
         function stepHandler() {
-        document.querySelector('.step_btn').disabled = true;
-        document.querySelector('.conti_btn').disabled = true;
-
-        const stepContainer = document.getElementById('stepContainer');
-        stepContainer.innerHTML = ""; // 清空之前的步驟
-
-        const steps = [
-            `每個人有 ${x} 根棒棒糖`,
-            `所以 ${y} 人總共需要計算 ${Array(y).fill(x).join(' + ')} = ${x} × ${y}`,
-            `總共會有 ${x} × ${y} = ${x * y} 根棒棒糖，答案是 ${x * y}`
-        ];
-
-        if (stepIndex < steps.length) {
-            const p = document.createElement('p');
-            p.textContent = (stepIndex + 1) + ". " + steps[stepIndex];
-            stepContainer.appendChild(p);
-
-            if (stepIndex === 1) {
-                // 為主運行區使用動畫
-                generateCandiesRowsWithFirstStepAnimated(x, y, stepContainer, () => {
-                    document.querySelector('.step_btn').disabled = false;
-                });
-            } else if (stepIndex < steps.length - 1) {
-                document.querySelector('.step_btn').disabled = true;
-                setTimeout(() => {
-                    document.querySelector('.step_btn').disabled = false;
-                }, 1000);
-            }
-            stepIndex++;
-        }
-
-        if (stepIndex === steps.length) {
             document.querySelector('.step_btn').disabled = true;
-        }
-    }
+            document.querySelector('.conti_btn').disabled = true;
 
-    function continuousHandler() {
-    document.querySelector('.step_btn').disabled = true;
-    document.querySelector('.conti_btn').disabled = true;
+            const stepContainer = document.getElementById('stepContainer');
+            stepContainer.innerHTML = ""; // 清空之前的步驟
 
-    const stepContainer = document.getElementById('stepContainer');
-    stepContainer.innerHTML = ""; // 清空之前的步驟
+            const steps = [
+                `每個人有 ${x} 根棒棒糖`,
+                `所以 ${y} 人總共需要計算 ${Array(y).fill(x).join(' + ')} = ${x} × ${y}`,
+                `總共會有 ${x} × ${y} = ${x * y} 根棒棒糖，答案是 ${x * y}`
+            ];
 
-    const steps = [
-        `每個人有 ${x} 根棒棒糖`,
-        `所以 ${y} 人總共需要計算 ${Array(y).fill(x).join(' + ')} = ${x} × ${y}`,
-    ];
+            if (stepIndex < steps.length) {
+                const p = document.createElement('p');
+                p.textContent = (stepIndex + 1) + ". " + steps[stepIndex];
+                stepContainer.appendChild(p);
 
-    steps.forEach((step, index) => {
-        setTimeout(() => {
-            const p = document.createElement('p');
-            p.textContent = (index + 1) + ". " + step;
-            stepContainer.appendChild(p);
-
-            // 當到第二步的時候顯示動畫
-            if (index === 1) {
-                generateCandiesRowsWithFirstStepAnimated(x, y, stepContainer, () => {
-                    // 在所有動畫完成後，顯示第三步驟
+                if (stepIndex === 1) {
+                    // 為主運行區使用動畫
+                    generateCandiesRowsWithFirstStepAnimated(x, y, stepContainer, () => {
+                        document.querySelector('.step_btn').disabled = false;
+                    });
+                } else if (stepIndex < steps.length - 1) {
+                    document.querySelector('.step_btn').disabled = true;
                     setTimeout(() => {
-                        const finalStep = document.createElement('p');
-                        finalStep.textContent = `3. 總共有 ${x} × ${y} = ${x * y} 根棒棒糖，答案是 ${x * y}`;
-                        stepContainer.appendChild(finalStep);
-                        document.querySelector('.conti_btn').disabled = false;
-                    }, 500); // 確保動畫完成後顯示最終步驟
-                });
-            }
-        }, 1000 * index);
-    });
-}
-
-
-
-
-    // 修改后的 generateCandiesRowsWithFirstStepAnimated 函數，增加 container 參數
-    function generateCandiesRowsWithFirstStepAnimated(x, y, container, callback) {
-        let personIndex = 0;
-
-        function showCandies() {
-            if (personIndex >= y) {
-                if (callback) callback();
-                return;
+                        document.querySelector('.step_btn').disabled = false;
+                    }, 1000);
+                }
+                stepIndex++;
             }
 
-            const rowDiv = document.createElement('div');
-            rowDiv.style.display = 'flex';
-            rowDiv.style.alignItems = 'center';
+            if (stepIndex === steps.length) {
+                document.querySelector('.step_btn').disabled = true;
+            }
+        }
 
-            const label = document.createElement('span');
-            label.textContent = `第 ${personIndex + 1} 個人有 ${x} 根：`;
-            label.style.marginRight = '10px';
+        function continuousHandler() {
+            document.querySelector('.step_btn').disabled = true;
+            document.querySelector('.conti_btn').disabled = true;
 
-            rowDiv.appendChild(label);
-            container.appendChild(rowDiv); // 在指定的 container 中顯示
+            const stepContainer = document.getElementById('stepContainer');
+            stepContainer.innerHTML = ""; // 清空之前的步驟
 
-            if (personIndex === 0) {
-                let candyIndex = 0;
-                function showNextCandy() {
-                    if (candyIndex >= x) {
-                        personIndex++;
-                        setTimeout(showCandies, 500);
-                        return;
+            const steps = [
+                `每個人有 ${x} 根棒棒糖`,
+                `所以 ${y} 人總共需要計算 ${Array(y).fill(x).join(' + ')} = ${x} × ${y}`,
+            ];
+
+            steps.forEach((step, index) => {
+                setTimeout(() => {
+                    const p = document.createElement('p');
+                    p.textContent = (index + 1) + ". " + step;
+                    stepContainer.appendChild(p);
+
+                    // 當到第二步的時候顯示動畫
+                    if (index === 1) {
+                        generateCandiesRowsWithFirstStepAnimated(x, y, stepContainer, () => {
+                            // 在所有動畫完成後，顯示第三步驟
+                            setTimeout(() => {
+                                const finalStep = document.createElement('p');
+                                finalStep.textContent = `3. 總共有 ${x} × ${y} = ${x * y} 根棒棒糖，答案是 ${x * y}`;
+                                stepContainer.appendChild(finalStep);
+                                document.querySelector('.conti_btn').disabled = false;
+                            }, 500); // 確保動畫完成後顯示最終步驟
+                        });
                     }
+                }, 1000 * index);
+            });
+        }
 
-                    const img = document.createElement('img');
-                    img.src = 'pic/candy.png';
-                    img.classList.add('candy');
-                    rowDiv.appendChild(img);
+        function generateCandiesRowsWithFirstStepAnimated(x, y, container, callback) {
+            let personIndex = 0;
 
-                    setTimeout(() => {
+            function showCandies() {
+                if (personIndex >= y) {
+                    if (callback) callback();
+                    return;
+                }
+
+                const rowDiv = document.createElement('div');
+                rowDiv.style.display = 'flex';
+                rowDiv.style.alignItems = 'center';
+
+                const label = document.createElement('span');
+                label.textContent = `第 ${personIndex + 1} 個人有 ${x} 根：`;
+                label.style.marginRight = '10px';
+
+                rowDiv.appendChild(label);
+                container.appendChild(rowDiv); // 在指定的 container 中顯示
+
+                if (personIndex === 0) {
+                    let candyIndex = 0;
+                    function showNextCandy() {
+                        if (candyIndex >= x) {
+                            personIndex++;
+                            setTimeout(showCandies, 500);
+                            return;
+                        }
+
+                        const img = document.createElement('img');
+                        img.src = 'pic/candy.png';
+                        img.classList.add('candy');
+                        rowDiv.appendChild(img);
+
+                        setTimeout(() => {
+                            img.style.opacity = '1';
+                            candyIndex++;
+                            showNextCandy();
+                        }, 500);
+                    }
+                    showNextCandy();
+                } 
+                else {
+                    for (let j = 0; j < x; j++) {
+                        const img = document.createElement('img');
+                        img.src = 'pic/candy.png';
+                        img.classList.add('candy');
                         img.style.opacity = '1';
-                        candyIndex++;
-                        showNextCandy();
-                    }, 500);
+                        rowDiv.appendChild(img);
+                    }
+                    personIndex++;
+                    setTimeout(showCandies, 500);
                 }
-                showNextCandy();
-            } else {
-                for (let j = 0; j < x; j++) {
-                    const img = document.createElement('img');
-                    img.src = 'pic/candy.png';
-                    img.classList.add('candy');
-                    img.style.opacity = '1';
-                    rowDiv.appendChild(img);
-                }
-                personIndex++;
-                setTimeout(showCandies, 500);
             }
+            showCandies();
         }
-        showCandies();
-    }
 
 
 
-    function checkAnswer() {
-    const expressionInput = document.getElementById('expressionInput').value.trim();
-    const resultInput = parseInt(document.getElementById('resultInput').value.trim(), 10);
-    const correctExpressions = [`${x}*${y}`, `${y}*${x}`];
-    const correctResult = x * y;
+        function checkAnswer() {
+        const expressionInput = document.getElementById('expressionInput').value.trim();
+        const resultInput = parseInt(document.getElementById('resultInput').value.trim(), 10);
+        const correctExpressions = [`${x}*${y}`, `${y}*${x}`];
+        const correctResult = x * y;
 
-    if (correctExpressions.includes(expressionInput) && resultInput === correctResult) {
-        document.getElementById('dialogText').textContent = "答對了！請按「下一題」繼續練習。";
-        document.getElementById("nextQuestionButton").disabled = false;
-        document.getElementById("resultMessage").innerHTML = "<span class='success-animation'>太棒了！你答對了！</span>";
-        correctAnswers++;
+            if (correctExpressions.includes(expressionInput) && resultInput === correctResult) {
+                document.getElementById('dialogText').textContent = "答對了！請按「下一題」繼續練習。";
+                document.getElementById("nextQuestionButton").disabled = false;
+                document.getElementById("resultMessage").innerHTML = "<span class='success-animation'>太棒了！你答對了！</span>";
+                correctAnswers++;
 
-        // 禁用檢查答案按鈕
-        document.querySelector("button[onclick='checkAnswer()']").disabled = true;
+                // 禁用檢查答案按鈕
+                document.querySelector("button[onclick='checkAnswer()']").disabled = true;
 
-        if (!correctQuestions.some(q => q.question === `${x}*${y}`)) {
-            correctQuestions.push({ question: `${x}*${y}`, answer: correctResult });
+                if (!correctQuestions.some(q => q.question === `${x}*${y}`)) {
+                    correctQuestions.push({ question: `${x}*${y}`, answer: correctResult });
+                }
+            } 
+            else {
+                document.getElementById('dialogText').textContent = "答錯了，別灰心，試著再一次！";
+                if (!incorrectQuestions.some(q => q.question === `${x}*${y}`)) {
+                    incorrectQuestions.push({ question: `${x}*${y}`, answer: correctResult });
+                }
+            }
+
+            document.getElementById("stats").innerHTML = `目前正確 ${correctAnswers} 題`;
         }
-    } else {
-        document.getElementById('dialogText').textContent = "答錯了，別灰心，試著再一次！";
-        if (!incorrectQuestions.some(q => q.question === `${x}*${y}`)) {
-            incorrectQuestions.push({ question: `${x}*${y}`, answer: correctResult });
+
+        function nextQuestion() {
+            document.getElementById("stepContainer").innerHTML = "";
+            document.getElementById("expressionInput").value = "";
+            document.getElementById("resultInput").value = "";
+            document.getElementById("resultMessage").textContent = "";
+            stepIndex = 0;
+
+            // 啟用檢查答案按鈕
+            document.querySelector("button[onclick='checkAnswer()']").disabled = false;
+
+            generateQuestion();
         }
-    }
-
-    document.getElementById("stats").innerHTML = `目前正確 ${correctAnswers} 題`;
-}
-
-function nextQuestion() {
-    document.getElementById("stepContainer").innerHTML = "";
-    document.getElementById("expressionInput").value = "";
-    document.getElementById("resultInput").value = "";
-    document.getElementById("resultMessage").textContent = "";
-    stepIndex = 0;
-
-    // 啟用檢查答案按鈕
-    document.querySelector("button[onclick='checkAnswer()']").disabled = false;
-
-    generateQuestion();
-}
 
 
         function showHint() {
             alert(`提示: 試著把 ${y} 個 ${x} 加起來，或者直接使用乘法哦！`);
         }
 
-        // 小白板的開關函式
+        // 小白板的開關
         function toggleWhiteboard() {
             const whiteboard = document.getElementById('whiteboard');
             if (whiteboard.style.display === 'none' || whiteboard.style.display === '') {
                 whiteboard.style.display = 'flex';
-            } else {
+            } 
+            else {
                 whiteboard.style.display = 'none';
             }
         }
 
-        // 小白板繪畫功能
+        // 小白板繪畫
         const whiteboardCanvas = document.getElementById("whiteboardCanvas");
         whiteboardCanvas.width = 350;
         whiteboardCanvas.height = 380;
@@ -535,18 +533,19 @@ function nextQuestion() {
             ctx.clearRect(0, 0, whiteboardCanvas.width, whiteboardCanvas.height);
         }
 
-        // 顯示或隱藏答題記錄的函式
+        // 顯示或隱藏答題記錄
         function toggleRecordContainer() {
             const recordContainer = document.getElementById("recordContainer");
             if (recordContainer.style.display === "none" || recordContainer.style.display === "") {
                 showAllQuestions();
                 recordContainer.style.display = "block";
-            } else {
+            } 
+            else {
                 recordContainer.style.display = "none";
             }
         }
 
-        // 顯示所有答題記錄的函式
+        // 顯示所有答題記錄
         function showAllQuestions() {
             const allQuestions = incorrectQuestions.concat(correctQuestions.filter(q => !incorrectQuestions.some(incQ => incQ.question === q.question)));
             const recordContainer = document.getElementById("recordContainer");
@@ -579,102 +578,103 @@ function nextQuestion() {
             });
         }
 
+        
         // 用於答題記錄中的逐步解題
-// 用於答題記錄中的逐步解題
-function stepHandlerFromRecord(index) {
-    const q = incorrectQuestions.concat(correctQuestions.filter(q => !incorrectQuestions.some(incQ => incQ.question === q.question)))[index];
-    const stepContainer = document.getElementById(`stepContainer${index}`);
-    
-    // 清空之前的解題步驟
-    stepContainer.innerHTML = "";
+        function stepHandlerFromRecord(index) {
+            const q = incorrectQuestions.concat(correctQuestions.filter(q => !incorrectQuestions.some(incQ => incQ.question === q.question)))[index];
+            const stepContainer = document.getElementById(`stepContainer${index}`);
+            
+            // 清空之前的解題步驟
+            stepContainer.innerHTML = "";
 
-    const x = parseInt(q.question.split('*')[0]);
-    const y = parseInt(q.question.split('*')[1]);
-    let stepIndex = 0;
+            const x = parseInt(q.question.split('*')[0]);
+            const y = parseInt(q.question.split('*')[1]);
+            let stepIndex = 0;
 
-    const steps = [
-        `每個人有 ${x} 根棒棒糖`,
-        `所以 ${y} 人總共需要計算 ${Array(y).fill(x).join(' + ')} = ${x} × ${y}`
-    ];
+            const steps = [
+                `每個人有 ${x} 根棒棒糖`,
+                `所以 ${y} 人總共需要計算 ${Array(y).fill(x).join(' + ')} = ${x} × ${y}`
+            ];
 
-    function showStep() {
-        if (stepIndex < steps.length) {
-            const p = document.createElement('p');
-            p.textContent = (stepIndex + 1) + ". " + steps[stepIndex];
-            stepContainer.appendChild(p);
+            function showStep() {
+                if (stepIndex < steps.length) {
+                    const p = document.createElement('p');
+                    p.textContent = (stepIndex + 1) + ". " + steps[stepIndex];
+                    stepContainer.appendChild(p);
 
-            if (stepIndex === 1) {
-                // 在第二步顯示後，顯示動畫
-                generateCandiesRowsWithFirstStepAnimated(x, y, stepContainer, () => {
-                    // 當動畫完成後，顯示第三步
-                    setTimeout(() => {
-                        const finalStep = document.createElement('p');
-                        finalStep.textContent = `3. 總共有 ${x} × ${y} = ${x * y} 根棒棒糖，答案是 ${x * y}`;
-                        stepContainer.appendChild(finalStep);
-                        enableStepButton(index);
-                    }, 500);
-                });
-            } else {
+                    if (stepIndex === 1) {
+                        // 在第二步顯示後，顯示動畫
+                        generateCandiesRowsWithFirstStepAnimated(x, y, stepContainer, () => {
+                            // 當動畫完成後，顯示第三步
+                            setTimeout(() => {
+                                const finalStep = document.createElement('p');
+                                finalStep.textContent = `3. 總共有 ${x} × ${y} = ${x * y} 根棒棒糖，答案是 ${x * y}`;
+                                stepContainer.appendChild(finalStep);
+                                enableStepButton(index);
+                            }, 500);
+                        });
+                    } 
+                    else {
+                        setTimeout(() => {
+                            enableStepButton(index);
+                        }, 1000);
+                    }
+                    stepIndex++;
+                }
+            }
+
+                function enableStepButton(index) {
+                    const stepButton = document.querySelector(`#collapse${index} .step_btn`);
+                    if (stepButton) {
+                        stepButton.disabled = false;
+                    }
+                }
+
+                // 初次禁用按鈕
+                const stepButton = document.querySelector(`#collapse${index} .step_btn`);
+                if (stepButton) {
+                    stepButton.disabled = true;
+                }
+
+            showStep();
+
+            // 綁定按鈕以逐步顯示步驟
+            stepButton.addEventListener('click', showStep);
+        }
+
+
+        // 用於答題記錄中的連續解題
+        function continuousHandlerFromRecord(index) {
+            const q = incorrectQuestions.concat(correctQuestions.filter(q => !incorrectQuestions.some(incQ => incQ.question === q.question)))[index];
+
+            // 先清空 stepContainer
+            const stepContainer = document.getElementById(`stepContainer${index}`);
+            stepContainer.innerHTML = "";
+
+            // 禁用按鈕以防止重複按下
+            const stepBtn = stepContainer.closest('.card-body').querySelector('.step_btn');
+            const contiBtn = stepContainer.closest('.card-body').querySelector('.conti_btn');
+            stepBtn.disabled = true;
+            contiBtn.disabled = true;
+
+            const steps = [
+                `每個人有 ${q.answer / y} 根棒棒糖`,
+                `所以 ${y} 人總共需要計算 ${Array(y).fill(q.answer / y).join(' + ')} = ${q.answer / y} × ${y}`,
+                `總共會有 ${q.answer / y} × ${y} = ${q.answer} 根棒棒糖，答案是 ${q.answer}`
+            ];
+
+            steps.forEach((step, i) => {
                 setTimeout(() => {
-                    enableStepButton(index);
-                }, 1000);
-            }
-            stepIndex++;
+                    const p = document.createElement('p');
+                    p.textContent = (i + 1) + ". " + step;
+                    stepContainer.appendChild(p);
+
+                    if (i === steps.length - 1) {
+                        stepBtn.disabled = false;
+                    }
+                }, 2000 * i);
+            });
         }
-    }
-
-    function enableStepButton(index) {
-        const stepButton = document.querySelector(`#collapse${index} .step_btn`);
-        if (stepButton) {
-            stepButton.disabled = false;
-        }
-    }
-
-    // 初次禁用按鈕
-    const stepButton = document.querySelector(`#collapse${index} .step_btn`);
-    if (stepButton) {
-        stepButton.disabled = true;
-    }
-
-    showStep();
-
-    // 綁定按鈕以逐步顯示步驟
-    stepButton.addEventListener('click', showStep);
-}
-
-
-// 用於答題記錄中的連續解題
-function continuousHandlerFromRecord(index) {
-    const q = incorrectQuestions.concat(correctQuestions.filter(q => !incorrectQuestions.some(incQ => incQ.question === q.question)))[index];
-
-    // 先清空 stepContainer
-    const stepContainer = document.getElementById(`stepContainer${index}`);
-    stepContainer.innerHTML = "";
-
-    // 禁用按鈕以防止重複按下
-    const stepBtn = stepContainer.closest('.card-body').querySelector('.step_btn');
-    const contiBtn = stepContainer.closest('.card-body').querySelector('.conti_btn');
-    stepBtn.disabled = true;
-    contiBtn.disabled = true;
-
-    const steps = [
-        `每個人有 ${q.answer / y} 根棒棒糖`,
-        `所以 ${y} 人總共需要計算 ${Array(y).fill(q.answer / y).join(' + ')} = ${q.answer / y} × ${y}`,
-        `總共會有 ${q.answer / y} × ${y} = ${q.answer} 根棒棒糖，答案是 ${q.answer}`
-    ];
-
-    steps.forEach((step, i) => {
-        setTimeout(() => {
-            const p = document.createElement('p');
-            p.textContent = (i + 1) + ". " + step;
-            stepContainer.appendChild(p);
-
-            if (i === steps.length - 1) {
-                stepBtn.disabled = false;
-            }
-        }, 2000 * i);
-    });
-}
 
 
     </script>

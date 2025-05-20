@@ -149,93 +149,71 @@
     }
   </style>
   <script>
-    // -----------------------
-    // 工具函式
-    // -----------------------
-
-    // 容許小數誤差 (例如 0.001)
+    // 容許小數誤差
     function isCloseEnough(userVal, correctVal, epsilon = 0.001) {
       return Math.abs(userVal - correctVal) < epsilon;
     }
 
-    // 產生 [a, b]，確保 a >= b，用於減法避免負數
+    // 確保 a >= b，用於減法避免負數
     function generateSubtractionPair() {
-      let a = Math.floor(Math.random() * 30) + 10; // 10~39
-      let b = Math.floor(Math.random() * 30) + 10; // 10~39
+      let a = Math.floor(Math.random() * 30) + 10; 
+      let b = Math.floor(Math.random() * 30) + 10; 
       if (b > a) {
         [a, b] = [b, a];
       }
       return [a, b];
     }
 
-    // 產生 num1, num2，確保 num1 為 num2 的倍數
-    // 適合遊樂場門票、長途巴士旅程等必須整除的情境
+    // 遊樂場門票、長途巴士旅程必須整除
     function generateMultiple(num1Range, num2Range) {
       let num2 = Math.floor(Math.random() * num2Range) + 1;
       let num1 = num2 * (Math.floor(Math.random() * num1Range) + 1);
       return [num1, num2];
     }
 
-    // 第 3 題「長算式」：((a + b) × c) ÷ d
-    // 帶 2 位小數，如要整除可自行改寫
     function generateComplexExpr() {
-      let a = Math.floor(Math.random() * 9) + 1; // 1..9
-      let b = Math.floor(Math.random() * 9) + 1; // 1..9
-      let c = Math.floor(Math.random() * 4) + 2; // 2..5
-      let d = Math.floor(Math.random() * 5) + 1; // 1..5
+      let a = Math.floor(Math.random() * 9) + 1; 
+      let b = Math.floor(Math.random() * 9) + 1; 
+      let c = Math.floor(Math.random() * 4) + 2; 
+      let d = Math.floor(Math.random() * 5) + 1; 
 
       const expression = `(( ${a} + ${b} ) × ${c}) ÷ ${d}`;
       const resultValue = parseFloat((((a + b) * c) / d).toFixed(2));
       return { expr: expression, value: resultValue };
     }
 
-    // 第 5 題: 讓「早餐店」生成合理亂數
     function generateBreakfast() {
-      // 例如:
-      // 兒童餐單價: [20..80]
-      // 買幾份兒童餐: [2..6]
-      // => 總金額
-      // => 再在 [2..10] 查一個整除的 adultCount
-      let childMeals = Math.floor(Math.random() * 5) + 2; // 2..6
-      let childPrice = Math.floor(Math.random() * 61) + 20; // 20..80
+      let childMeals = Math.floor(Math.random() * 5) + 2;
+      let childPrice = Math.floor(Math.random() * 61) + 20; 
       let totalCost = childPrice * childMeals; 
-      let adultCount = Math.floor(Math.random() * 9) + 2; // 2..10
+      let adultCount = Math.floor(Math.random() * 9) + 2; 
       while (totalCost % adultCount !== 0) {
         adultCount = Math.floor(Math.random() * 9) + 2;
       }
       let adultPrice = totalCost / adultCount;
 
       return {
-        // 套餐售價
         num1: adultPrice,
-        // 買幾份套餐
         num2: adultCount,
-        // 可買多少份兒童餐
         num3: childMeals
       };
     }
 
-    // -----------------------
-    // 全域變數
-    // -----------------------
     let questions = [];
     let answers = [];
 
-    // -----------------------
-    // 產生題目
-    // -----------------------
     function generateQuestions() {
       const questionContainer = document.getElementById("questions");
       if (!questionContainer) return;
 
-      // 第 1 題 (index=0): 乘法
+      // 第 1 題 乘法
       let q0 = {
         num1: Math.floor(Math.random() * 10) + 1,
         num2: Math.floor(Math.random() * 10) + 1,
         op: "×"
       };
 
-      // 第 2 題 (index=1): 減法 (確保不負)
+      // 第 2 題 減法 (確保不負)
       let [subA, subB] = generateSubtractionPair();
       let q1 = {
         num1: subA,
@@ -243,14 +221,14 @@
         op: "-"
       };
 
-      // 第 3 題 (index=2): 除法 + 商/餘
+      // 第 3 題 除法 + 商/餘
       let q2 = {
         num1: Math.floor(Math.random() * 50) + 1,
         num2: Math.floor(Math.random() * 9) + 1,
         op: "÷"
       };
 
-      // 第 4 題 (index=3): 隨機括號 + 乘 / 除
+      // 第 4 題 隨機括號 + 乘 / 除
       let comp = generateComplexExpr();
       let q3 = {
         expr: comp.expr,
@@ -258,15 +236,14 @@
         op: "complex"
       };
 
-      // 第 5 題 (index=4): 淨灘
-      // 產生淨灘題目 (總垃圾量 / 人數) 答案適中且有小數
+      // 第 5 題 淨灘 (總垃圾量 / 人數) 
         function generateCleanupQuestion() {
-        let volunteerCount = Math.floor(Math.random() * 10) + 5; // 5~14 位志工
-        let perBagWeight = Math.floor(Math.random() * 3) + 2; // 每袋 2~4 公斤
-        let bagCount = Math.floor(Math.random() * 10) + 5; // 5~14 袋
+        let volunteerCount = Math.floor(Math.random() * 10) + 5; 
+        let perBagWeight = Math.floor(Math.random() * 3) + 2; 
+        let bagCount = Math.floor(Math.random() * 10) + 5; 
         let totalWeight = perBagWeight * bagCount;
 
-        // 確保總垃圾量大於志工人數 * 2（每人至少 2 公斤以上）
+        // 確保總垃圾量大於志工人數
         while (totalWeight < volunteerCount * 2) {
             bagCount++;
             totalWeight = perBagWeight * bagCount;
@@ -283,7 +260,7 @@
 
         let netQ = generateCleanupQuestion();
 
-      // 第 6 題 (index=5): 早餐店 (亂數)
+      // 第 6 題  早餐店 (亂數)
       let b = generateBreakfast();
       let q5 = {
         num1: b.num1,
@@ -292,14 +269,14 @@
         op: "早餐店"
       };
 
-      // 第 7 題 (index=6): 樂隊排練 (可有餘數，但只取商)
+      // 第 7 題 樂隊排練 (可有餘數，但只取商)
       let q6 = {
         num1: Math.floor(Math.random() * 200) + 50,
         num2: Math.floor(Math.random() * 5) + 1,
         op: "樂隊"
       };
 
-      // 第 8 題 (index=7): 遊樂場門票 (整除)
+      // 第 8 題 遊樂場門票 (整除)
       let [a7, b7] = generateMultiple(20, 10);
       let q7 = {
         num1: a7,
@@ -307,13 +284,13 @@
         op: "門票"
       };
 
-      // 第 9 題 (index=8): 購物折扣 (打8折後，四捨五入)
+      // 第 9 題  購物折扣 (打8折後，四捨五入)
       let q8 = {
         num1: Math.floor(Math.random() * 300) + 50,
         op: "折扣"
       };
 
-      // 第 10 題 (index=9): 長途巴士 (整除 + 商/餘)
+      // 第 10 題 長途巴士 (整除 + 商/餘)
       let [busA, busB] = generateMultiple(50, 25);
       let q9 = {
         num1: busA,
@@ -331,14 +308,11 @@
       for (let i = 0; i < 10; i++) {
         let txt = generateQuestionText(i);
         questionsHTML += `<p style="--i:${i}">${i + 1}. ${txt}</p>`;
-
       }
       questionContainer.innerHTML = questionsHTML;
     }
 
-    // -----------------------
     // 顯示文字 + 答案計算
-    // -----------------------
     function generateQuestionText(i) {
       const q = questions[i];
       switch (i) {
@@ -413,9 +387,7 @@
       }
     }
 
-    // -----------------------
     // 提交答案 + 檢查
-    // -----------------------
     function checkAnswers(event) {
       event.preventDefault();
       const resultContainer = document.getElementById("resultContainer");
@@ -435,10 +407,12 @@
           let userAnswer = [quotientInput, remainderInput];
           if (JSON.stringify(userAnswer) === JSON.stringify(correctAnswer)) {
             score++;
-          } else {
+          } 
+          else {
             feedback += `<p class='wrong'>第 ${i+1} 題錯誤，正確答案是：${correctAnswer}</p>`;
           }
-        } else {
+        } 
+        else {
           // 其餘單一輸入框
           let inputVal = document.querySelector(`[name=q${i+1}]`).value.trim();
           let userVal = parseFloat(inputVal);
@@ -449,22 +423,27 @@
               // 整數題 => 直接比較
               if (userVal === correctAnswer) {
                 score++;
-              } else {
+              } 
+              else {
                 feedback += `<p class='wrong'>第 ${i+1} 題錯誤，正確答案是：${correctAnswer}</p>`;
               }
-            } else {
+            } 
+            else {
               // 可能是小數 => 用誤差判斷
               if (isCloseEnough(userVal, correctAnswer)) {
                 score++;
-              } else {
+              } 
+              else {
                 feedback += `<p class='wrong'>第 ${i+1} 題錯誤，正確答案是：${correctAnswer}</p>`;
               }
             }
-          } else {
+          } 
+          else {
             // fallback，如果答案不是 number (理論上不會發生)
             if (JSON.stringify(userVal) === JSON.stringify(correctAnswer)) {
               score++;
-            } else {
+            } 
+            else {
               feedback += `<p class='wrong'>第 ${i+1} 題錯誤，正確答案是：${correctAnswer}</p>`;
             }
           }
@@ -498,7 +477,6 @@
         const elapsedSeconds = elapsedTimeSec % 60;
         const elapsedTimeFormatted = `${elapsedMinutes}分${elapsedSeconds}秒`;
 
-        // 從 localStorage 取得 userName
         const userName = localStorage.getItem('userName');
 
         if (userName) {
@@ -520,7 +498,8 @@
         .catch(err => {
             console.error('儲存結果時發生錯誤', err);
         });
-        } else {
+        } 
+        else {
         console.warn('找不到 userName，請確認使用者有登入');
         }
     }

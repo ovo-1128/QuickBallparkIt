@@ -6,128 +6,126 @@
     <meta charset="UTF-8">
     <title>CH4 - 除法學習</title>
     <style>
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f9f9f9;
-    text-align: center;
-    margin: 0;
-    padding: 0;
-}
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
 
-/* 頁面橫幅樣式 */
-.banner {
-    background-color: #4CAF50;
-    color: white;
-    padding: 15px;
-    font-size: 22px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-}
+        .banner {
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px;
+            font-size: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
 
-/* 返回按鈕和標題置中 */
-.banner a {
-    position: absolute;
-    left: 15px;
-}
+        /* 返回按鈕和標題置中 */
+        .banner a {
+            position: absolute;
+            left: 15px;
+        }
 
-.banner h1 {
-    flex-grow: 1;
-    text-align: center;
-    margin: 0;
-}
+        .banner h1 {
+            flex-grow: 1;
+            text-align: center;
+            margin: 0;
+        }
 
-/* 按鈕樣式，包括 disabled 狀態 */
-button {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    padding: 8px 16px;
-    cursor: pointer;
-    margin: 5px;
-    font-size: 16px;
-    border-radius: 4px;
-    font-weight: bold;
-}
+        /* 按鈕樣式*/
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 16px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
 
-button:hover {
-    background-color: #45a049;
-}
+        button:hover {
+            background-color: #45a049;
+        }
 
-button:disabled {
-    background-color: #d3d3d3;
-    color: #888;
-    cursor: not-allowed;
-}
+        button:disabled {
+            background-color: #d3d3d3;
+            color: #888;
+            cursor: not-allowed;
+        }
 
-/* 頁面主要內容 */
-.content {
-    max-width: 600px;
-    margin: 20px auto;
-    padding: 20px;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
+        /* 頁面主要內容 */
+        .content {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
 
-/* 對話框樣式 */
-.dialog-box {
-    border: 1px solid #ddd;
-    padding: 15px;
-    margin-bottom: 20px;
-    border-radius: 8px;
-    background-color: #fff;
-    text-align: left;
-    position: relative;
-}
+        /* 對話框 */
+        .dialog-box {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            background-color: #fff;
+            text-align: left;
+            position: relative;
+        }
 
-.helper-image {
-    width: 50px;
-    height: 50px;
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    border-radius: 50%;
-}
+        .helper-image {
+            width: 50px;
+            height: 50px;
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            border-radius: 50%;
+        }
 
-.dialog-text {
-    margin-left: 70px;
-    line-height: 1.5;
-    font-size: 16px;
-    color: #333;
-}
+        .dialog-text {
+            margin-left: 70px;
+            line-height: 1.5;
+            font-size: 16px;
+            color: #333;
+        }
 
-/* 動態內容樣式 */
-#stepContainer {
-    clear: both;
-    margin-top: 10px;
-    font-size: 18px;
-    text-align: left;
-}
+        /* 動態內容 */
+        #stepContainer {
+            clear: both;
+            margin-top: 10px;
+            font-size: 18px;
+            text-align: left;
+        }
 
-.candy {
-    width: 30px;
-    height: 30px;
-    margin: 2px;
-}
+        .candy {
+            width: 30px;
+            height: 30px;
+            margin: 2px;
+        }
 
-/* 列式及答案輸入區域 */
-input[type="text"] {
-    padding: 8px;
-    margin: 5px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 16px;
-}
+        /* 列式及答案輸入區 */
+        input[type="text"] {
+            padding: 8px;
+            margin: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
 
-/* 消息顯示樣式 */
-#resultMessage {
-    font-size: 16px;
-    font-weight: bold;
-    color: #333;
-}
-
+        /* 消息顯示 */
+        #resultMessage {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+        }
 
     </style>
 </head>
@@ -203,7 +201,8 @@ input[type="text"] {
                 while (totalItems % people === 0) {
                     totalItems = Math.floor(Math.random() * 100);
                 }
-            } else {
+            } 
+            else {
                 totalItems = people * (Math.floor(Math.random() * 10) + 1);
             }
 
@@ -258,63 +257,63 @@ input[type="text"] {
             });
         }
         function generateCandiesRows(totalItems, people) {
-    const stepContainer = document.getElementById('stepContainer');
-    stepContainer.innerHTML = ''; // 清空內容，以免累積過多結果
+            const stepContainer = document.getElementById('stepContainer');
+            stepContainer.innerHTML = ''; // 清空內容，以免累積過多結果
 
-    const itemsPerPerson = Math.floor(totalItems / people);
-    const remainder = totalItems % people; // 計算餘數
+            const itemsPerPerson = Math.floor(totalItems / people);
+            const remainder = totalItems % people; 
 
-    for (let i = 1; i <= people; i++) {
-        const rowDiv = document.createElement('div');
-        rowDiv.style.display = 'flex';
-        rowDiv.style.alignItems = 'center';
-        rowDiv.style.marginBottom = '5px';
+            for (let i = 1; i <= people; i++) {
+                const rowDiv = document.createElement('div');
+                rowDiv.style.display = 'flex';
+                rowDiv.style.alignItems = 'center';
+                rowDiv.style.marginBottom = '5px';
 
-        const label = document.createElement('span');
-        label.textContent = `第 ${i} 個人分得：`;
-        label.style.marginRight = '10px';
+                const label = document.createElement('span');
+                label.textContent = `第 ${i} 個人分得：`;
+                label.style.marginRight = '10px';
 
-        rowDiv.appendChild(label);
+                rowDiv.appendChild(label);
 
-        for (let j = 0; j < itemsPerPerson; j++) {
-            const img = document.createElement('img');
-            img.src = 'pic/candy.png';
-            img.classList.add('candy');
-            img.style.width = '30px'; // 設定圖片大小
-            img.style.height = '30px';
-            img.style.marginRight = '5px';
-            rowDiv.appendChild(img);
+                for (let j = 0; j < itemsPerPerson; j++) {
+                    const img = document.createElement('img');
+                    img.src = 'pic/candy.png';
+                    img.classList.add('candy');
+                    img.style.width = '30px'; 
+                    img.style.height = '30px';
+                    img.style.marginRight = '5px';
+                    rowDiv.appendChild(img);
+                }
+
+                stepContainer.appendChild(rowDiv);
+            }
+
+            // 顯示餘數的部分
+            if (remainder > 0) {
+                const remainderDiv = document.createElement('div');
+                remainderDiv.style.display = 'flex';
+                remainderDiv.style.alignItems = 'center';
+                remainderDiv.style.marginTop = '10px';
+
+                const remainderLabel = document.createElement('span');
+                remainderLabel.textContent = `剩餘的糖果（餘數）：`;
+                remainderLabel.style.marginRight = '10px';
+                remainderLabel.style.fontWeight = 'bold';
+                remainderDiv.appendChild(remainderLabel);
+
+                for (let i = 0; i < remainder; i++) {
+                    const img = document.createElement('img');
+                    img.src = 'pic/candy.png';
+                    img.classList.add('candy');
+                    img.style.width = '30px';
+                    img.style.height = '30px';
+                    img.style.marginRight = '5px';
+                    remainderDiv.appendChild(img);
+                }
+
+                stepContainer.appendChild(remainderDiv);
+            }
         }
-
-        stepContainer.appendChild(rowDiv);
-    }
-
-    // 顯示餘數的部分
-    if (remainder > 0) {
-        const remainderDiv = document.createElement('div');
-        remainderDiv.style.display = 'flex';
-        remainderDiv.style.alignItems = 'center';
-        remainderDiv.style.marginTop = '10px';
-
-        const remainderLabel = document.createElement('span');
-        remainderLabel.textContent = `剩餘的糖果（餘數）：`;
-        remainderLabel.style.marginRight = '10px';
-        remainderLabel.style.fontWeight = 'bold';
-        remainderDiv.appendChild(remainderLabel);
-
-        for (let i = 0; i < remainder; i++) {
-            const img = document.createElement('img');
-            img.src = 'pic/candy.png';
-            img.classList.add('candy');
-            img.style.width = '30px';
-            img.style.height = '30px';
-            img.style.marginRight = '5px';
-            remainderDiv.appendChild(img);
-        }
-
-        stepContainer.appendChild(remainderDiv);
-    }
-}
 
 
         function checkAnswer() {
@@ -335,13 +334,17 @@ input[type="text"] {
             if (isExpressionCorrect && isResultCorrect && isResultCorrect2) {
                 dialogText.innerHTML = `<span style="color: green;">答對了！每人可以分得 ${correctResult} 顆糖果！</span>`;
                 document.getElementById("nextQuestionButton").disabled = false;
-            } else if (!isExpressionCorrect && isResultCorrect && isResultCorrect2) {
+            } 
+            else if (!isExpressionCorrect && isResultCorrect && isResultCorrect2) {
                 dialogText.innerHTML = `<span style="color: orange;">列式錯了但答案正確，再想想列式怎麼寫。</span>`;
-            } else if (isExpressionCorrect && !isResultCorrect && isResultCorrect2) {
+            } 
+            else if (isExpressionCorrect && !isResultCorrect && isResultCorrect2) {
                 dialogText.innerHTML = `<span style="color: orange;">列式正確，但答案的商錯了。試著再計算一次。</span>`;
-            } else if (isExpressionCorrect && isResultCorrect && !isResultCorrect2) {
+            } 
+            else if (isExpressionCorrect && isResultCorrect && !isResultCorrect2) {
                 dialogText.innerHTML = `<span style="color: orange;">列式正確，但答案的餘數錯了。試著再計算一次。</span>`;
-            } else {
+            } 
+            else {
                 dialogText.innerHTML = `<span style="color: red;">列式和答案都不對，再試試看！</span>`;
             }
         }
